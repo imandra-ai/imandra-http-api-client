@@ -15,7 +15,7 @@
 
 (package
  (name imandra_http_api_client)
- (synopsis "Instrumentation for https://opentelemetry.io")
+ (synopsis "Interact with Imandra via http from within OCaml.")
  (depends
   ocaml
   ppx_deriving_yojson
