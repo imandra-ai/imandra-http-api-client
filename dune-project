@@ -19,6 +19,7 @@
  (depends
   ocaml
   ppx_deriving_yojson
+  containers
   cohttp
   ppx_deriving
   cohttp-lwt-unix
