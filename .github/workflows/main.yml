@@ -1,0 +1,43 @@
+name: Main workflow
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          # - macos-latest
+          - ubuntu-latest
+          # - windows-latest
+        ocaml-compiler:
+          - 4.14.x
+          # - 4.08.x
+          # - 4.06.x
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Use OCaml ${{ matrix.ocaml-compiler }}
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - name: Install project dependencies
+        run: opam install . --deps-only --with-doc --with-test
+      - name: Build the project
+        run: opam exec -- dune build @install
+      # - name: Run tests
+      #   run: opam exec -- dune runtest
+
+      # - name: Upload the build artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-world.exe
+      #     path: _build/default/world.exe
