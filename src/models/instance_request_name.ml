@@ -6,15 +6,11 @@
  *)
 
 type t = {
-    (* Example: my_fn_name  *)
-    name: string;
-    instance_printer: Printer_details.t option [@default None];
-    hints: Hints.t option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (name : string) : t = {
-    name = name;
-    instance_printer = None;
-    hints = None;
+  (* Example: my_fn_name  *)
+  name: string;
+  instance_printer: Printer_details.t option; [@default None]
+  hints: Hints.t option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (name : string) : t = { name; instance_printer = None; hints = None }

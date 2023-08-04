@@ -5,11 +5,7 @@
  *
  *)
 
-type t = {
-    instance: Response_instance.t;
-} [@@deriving yojson { strict = false }, show ];;
+type t = { instance: Response_instance.t }
+[@@deriving yojson { strict = false }, show]
 
-let create (instance : Response_instance.t) : t = {
-    instance = instance;
-}
-
+let create (instance : Response_instance.t) : t = { instance }

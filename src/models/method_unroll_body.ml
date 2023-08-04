@@ -5,11 +5,7 @@
  *
  *)
 
-type t = {
-    steps: int32 option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
+type t = { steps: int32 option [@default None] }
+[@@deriving yojson { strict = false }, show]
 
-let create () : t = {
-    steps = None;
-}
-
+let create () : t = { steps = None }

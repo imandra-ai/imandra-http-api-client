@@ -6,14 +6,10 @@
  *)
 
 type t = {
-    model: Response_model.t option [@default None];
-    _type: Enums.instancetype option [@default None];
-    src: string option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create () : t = {
-    model = None;
-    _type = None;
-    src = None;
+  model: Response_model.t option; [@default None]
+  _type: Enums.instancetype option; [@default None]
+  src: string option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create () : t = { model = None; _type = None; src = None }

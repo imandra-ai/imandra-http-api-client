@@ -6,14 +6,10 @@
  *)
 
 type t = {
-    success: bool;
-    stdout: string option [@default None];
-    stderr: string option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (success : bool) : t = {
-    success = success;
-    stdout = None;
-    stderr = None;
+  success: bool;
+  stdout: string option; [@default None]
+  stderr: string option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (success : bool) : t = { success; stdout = None; stderr = None }

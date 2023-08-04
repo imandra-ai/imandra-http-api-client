@@ -6,16 +6,13 @@
  *)
 
 type t = {
-    steps: int32;
-    bound: int32 option [@default None];
-    instance: Response_instance.t;
-    unknown_reason: string;
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (steps : int32) (instance : Response_instance.t) (unknown_reason : string) : t = {
-    steps = steps;
-    bound = None;
-    instance = instance;
-    unknown_reason = unknown_reason;
+  steps: int32;
+  bound: int32 option; [@default None]
+  instance: Response_instance.t;
+  unknown_reason: string;
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (steps : int32) (instance : Response_instance.t)
+    (unknown_reason : string) : t =
+  { steps; bound = None; instance; unknown_reason }

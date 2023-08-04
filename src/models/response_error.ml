@@ -6,14 +6,10 @@
  *)
 
 type t = {
-    error: string;
-    stdout: string option [@default None];
-    stderr: string option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (error : string) : t = {
-    error = error;
-    stdout = None;
-    stderr = None;
+  error: string;
+  stdout: string option; [@default None]
+  stderr: string option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (error : string) : t = { error; stdout = None; stderr = None }

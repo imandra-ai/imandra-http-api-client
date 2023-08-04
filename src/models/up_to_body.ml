@@ -6,12 +6,9 @@
  *)
 
 type t = {
-    steps: int32;
-    bound: int32 option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (steps : int32) : t = {
-    steps = steps;
-    bound = None;
+  steps: int32;
+  bound: int32 option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (steps : int32) : t = { steps; bound = None }

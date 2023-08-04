@@ -6,12 +6,9 @@
  *)
 
 type t = {
-    _type: Enums.inducttype;
-    body: Method_induct_body_body.t option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (_type : Enums.inducttype) : t = {
-    _type = _type;
-    body = None;
+  _type: Enums.inducttype;
+  body: Method_induct_body_body.t option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (_type : Enums.inducttype) : t = { _type; body = None }

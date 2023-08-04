@@ -6,12 +6,10 @@
  *)
 
 type t = {
-    vars: string list;
-    style: Enums.inductstructuralstyle;
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (vars : string list) (style : Enums.inductstructuralstyle) : t = {
-    vars = vars;
-    style = style;
+  vars: string list;
+  style: Enums.inductstructuralstyle;
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (vars : string list) (style : Enums.inductstructuralstyle) : t =
+  { vars; style }

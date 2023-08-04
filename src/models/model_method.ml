@@ -6,12 +6,9 @@
  *)
 
 type t = {
-    _type: Enums.methodtype;
-    body: Method_body.t option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (_type : Enums.methodtype) : t = {
-    _type = _type;
-    body = None;
+  _type: Enums.methodtype;
+  body: Method_body.t option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (_type : Enums.methodtype) : t = { _type; body = None }

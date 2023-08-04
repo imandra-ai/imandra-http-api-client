@@ -6,16 +6,12 @@
  *)
 
 type t = {
-    steps: int32 option [@default None];
-    name: string;
-    _type: Enums.inducttype;
-    body: Method_induct_body_body.t option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (name : string) (_type : Enums.inducttype) : t = {
-    steps = None;
-    name = name;
-    _type = _type;
-    body = None;
+  steps: int32 option; [@default None]
+  name: string;
+  _type: Enums.inducttype;
+  body: Method_induct_body_body.t option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (name : string) (_type : Enums.inducttype) : t =
+  { steps = None; name; _type; body = None }

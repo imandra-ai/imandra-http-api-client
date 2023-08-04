@@ -6,17 +6,13 @@
  *)
 
 type t = {
-    (* Source code string with a given syntax (default Iml) *)
-    src: string;
-    syntax: Enums.syntax option [@default None];
-    instance_printer: Printer_details.t option [@default None];
-    hints: Hints.t option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (src : string) : t = {
-    src = src;
-    syntax = None;
-    instance_printer = None;
-    hints = None;
+  (* Source code string with a given syntax (default Iml) *)
+  src: string;
+  syntax: Enums.syntax option; [@default None]
+  instance_printer: Printer_details.t option; [@default None]
+  hints: Hints.t option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (src : string) : t =
+  { src; syntax = None; instance_printer = None; hints = None }

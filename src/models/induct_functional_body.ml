@@ -5,11 +5,6 @@
  *
  *)
 
-type t = {
-    f_name: string;
-} [@@deriving yojson { strict = false }, show ];;
+type t = { f_name: string } [@@deriving yojson { strict = false }, show]
 
-let create (f_name : string) : t = {
-    f_name = f_name;
-}
-
+let create (f_name : string) : t = { f_name }

@@ -6,13 +6,10 @@
  *)
 
 type t = {
-    (* Source code string with a given syntax (default Iml) *)
-    src: string;
-    syntax: Enums.syntax option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (src : string) : t = {
-    src = src;
-    syntax = None;
+  (* Source code string with a given syntax (default Iml) *)
+  src: string;
+  syntax: Enums.syntax option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (src : string) : t = { src; syntax = None }

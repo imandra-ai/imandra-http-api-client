@@ -6,12 +6,9 @@
  *)
 
 type t = {
-    _type: Enums.verifyresult;
-    body: Verify_response_body.t option [@default None];
-} [@@deriving yojson { strict = false }, show ];;
-
-let create (_type : Enums.verifyresult) : t = {
-    _type = _type;
-    body = None;
+  _type: Enums.verifyresult;
+  body: Verify_response_body.t option; [@default None]
 }
+[@@deriving yojson { strict = false }, show]
 
+let create (_type : Enums.verifyresult) : t = { _type; body = None }

@@ -5,11 +5,6 @@
  *
  *)
 
-type t = {
-    unknown_reason: string;
-} [@@deriving yojson { strict = false }, show ];;
+type t = { unknown_reason: string } [@@deriving yojson { strict = false }, show]
 
-let create (unknown_reason : string) : t = {
-    unknown_reason = unknown_reason;
-}
-
+let create (unknown_reason : string) : t = { unknown_reason }

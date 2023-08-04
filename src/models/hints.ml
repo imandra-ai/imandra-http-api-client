@@ -5,11 +5,7 @@
  *
  *)
 
-type t = {
-    _method: Model_method.t;
-} [@@deriving yojson { strict = false }, show ];;
+type t = { _method: Model_method.t }
+[@@deriving yojson { strict = false }, show]
 
-let create (_method : Model_method.t) : t = {
-    _method = _method;
-}
-
+let create (_method : Model_method.t) : t = { _method }
