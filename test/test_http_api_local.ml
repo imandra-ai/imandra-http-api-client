@@ -1,20 +1,28 @@
-(* open Imandra_http_api_client  *)
+open Imandra_http_api_client
 
 module Log = (val Logs.src_log (Logs.Src.create "imandra-http-api-local"))
 
-let setup_logs =
+(* let process =
+   Lwt_process.open_process_full
+     ("/usr/local/bin/imandra-http-api", [| "--skip-update" |]) *)
+
+let foo =
   Logs.set_reporter (Logs.format_reporter ());
-  Logs.set_level (Some Logs.Debug)
+  Logs.set_level (Some Logs.Debug);
+  Log.debug (fun k -> k "Starting server...");
+  Lwt_process.open_process_full
+    ("/usr/local/bin/imandra-http-api", [| "--skip-update" |])
 
 let () =
-  let http_api =
-    Log.debug (fun k -> k "Starting Http Api Process...");
-    new Lwt_process.process_full
-      ("/usr/local/bin/imandra-http-api", [| "--skip-update" |])
+  let response =
+    Log.debug (fun k -> k "Sending query to server...");
+    Default_api.eval
+      ~eval_request_src_t:
+        {
+          Eval_request_src.src = "let f x = x + 1";
+          Eval_request_src.syntax = Some `Iml;
+        }
   in
-  match http_api#state with
-  | Running ->
-    Log.debug (fun k -> k "Process running...")
-    (* Log.debug (fun k -> k "Terminating Http Api Process.."); *)
-    (* http_api#terminate) *)
-  | _ -> ()
+  let _ = Lwt_main.run response in
+  ();
+  Log.debug (fun k -> k "Terminating server...")

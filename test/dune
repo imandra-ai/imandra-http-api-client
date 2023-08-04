@@ -1,5 +1,5 @@
 (include_subdirs no)
 
-(test
- (name api_test)
- (libraries imandra_http_api_client containers))
+(tests
+ (names api_test test_http_api_local)
+ (libraries imandra_http_api_client containers alcotest-lwt))
