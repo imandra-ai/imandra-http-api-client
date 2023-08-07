@@ -1,0 +1,7 @@
+(include_subdirs no)
+
+(executable
+ (name test_http_api_local)
+ (public_name test_http_api_local)
+ (libraries imandra_http_api_client)
+ (modules test_http_api_local))
