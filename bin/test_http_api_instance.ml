@@ -21,10 +21,15 @@ let () =
       Default_api.instance_by_src
         ~instance_request_src_t:
           {
-            Instance_request_src.src = "fun l -> List.hd l = 4";
+            Instance_request_src.src = "fun (x : int) -> x > 4";
             Instance_request_src.syntax = Some `Iml;
             Instance_request_src.hints = None;
-            Instance_request_src.instance_printer = None;
+            Instance_request_src.instance_printer =
+              Some
+                {
+                  Imandra_http_api_client__Printer_details.name = "Z.sprint ()";
+                  Imandra_http_api_client__Printer_details.cx_var_name = "x";
+                };
           }
     in
     Log.debug (fun k -> k "Shutting down server...");
