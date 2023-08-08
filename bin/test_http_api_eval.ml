@@ -2,11 +2,6 @@ open Imandra_http_api_client
 
 module Log = (val Logs.src_log (Logs.Src.create "imandra-http-api-local"))
 
-(* let process =
-   Lwt_process.open_process_full
-     ("/usr/local/bin/imandra-http-api", [| "--skip-update" |]) *)
-
-(* let () = Default_api.get_status () |> Lwt_main.run |> print_string *)
 let () =
   let open Lwt.Syntax in
   Logs.set_reporter (Logs.format_reporter ());
@@ -30,12 +25,12 @@ let () =
             Eval_request_src.syntax = Some `Iml;
           }
     in
-    Log.debug (fun k -> k "Shutting down server...");
-    let* _ = Default_api.shutdown () in
+    (* Log.debug (fun k -> k "Shutting down server..."); *)
+    (* let* _ = Default_api.shutdown () in *)
     Lwt.return result
   in
 
-  let response = Lwt_main.run response in
-  Log.debug (fun k -> k "Received response %a..." Eval_response.pp response);
+  let response = Lwt_main.run response |> Eval_response.to_yojson in
+  Log.debug (fun k -> k "Received response %a..." Yojson.Safe.pp response);
   Log.debug (fun k -> k "Terminating server...");
   process#kill 11
