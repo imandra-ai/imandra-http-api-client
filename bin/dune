@@ -1,7 +1,12 @@
 (include_subdirs no)
 
-(executable
- (name test_http_api_local)
- (public_name test_http_api_local)
+(executables
+ (names test_http_api_eval test_http_api_instance)
+ (public_names test_http_api_eval test_http_api_instance)
  (libraries imandra_http_api_client)
- (modules test_http_api_local))
+ (modules test_http_api_eval test_http_api_instance))
+
+(test
+ (name test_run)
+ (libraries imandra_http_api_client)
+ (modules test_run))

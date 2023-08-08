@@ -6,7 +6,9 @@ module Log = (val Logs.src_log (Logs.Src.create "imandra-http-api-local"))
    Lwt_process.open_process_full
      ("/usr/local/bin/imandra-http-api", [| "--skip-update" |]) *)
 
+(* let () = Default_api.get_status () |> Lwt_main.run |> print_string *)
 let () =
+  let open Lwt.Syntax in
   Logs.set_reporter (Logs.format_reporter ());
   Logs.set_level (Some Logs.Debug);
   let process =
@@ -17,17 +19,23 @@ let () =
   Log.debug (fun k -> k "Server started with PID %d..." process#pid);
   (* Unix.sleep 120 *)
   Unix.sleep 10;
+
   let response =
     Log.debug (fun k -> k "Sending query to server...");
-
-    Default_api.eval
-      ~eval_request_src_t:
-        {
-          Eval_request_src.src = "let f x = x + 1";
-          Eval_request_src.syntax = Some `Iml;
-        }
+    let* result =
+      Default_api.eval
+        ~eval_request_src_t:
+          {
+            Eval_request_src.src = "let f x = x + 1";
+            Eval_request_src.syntax = Some `Iml;
+          }
+    in
+    Log.debug (fun k -> k "Shutting down server...");
+    let* _ = Default_api.shutdown () in
+    Lwt.return result
   in
+
   let response = Lwt_main.run response in
   Log.debug (fun k -> k "Received response %a..." Eval_response.pp response);
   Log.debug (fun k -> k "Terminating server...");
-  process#kill 9
+  process#kill 11
