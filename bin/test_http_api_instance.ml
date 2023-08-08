@@ -1,5 +1,7 @@
 open Imandra_http_api_client
 
+let () = Printexc.record_backtrace true
+
 module Log = (val Logs.src_log (Logs.Src.create "imandra-http-api-local"))
 
 let () =
