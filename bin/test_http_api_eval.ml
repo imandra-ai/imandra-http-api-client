@@ -9,10 +9,10 @@ let () =
   let process =
     Log.debug (fun k -> k "Starting server...");
     Lwt_process.open_process_full
-      ("/usr/local/bin/imandra-http-api", [| "--skip-update" |])
+      ( "/usr/local/bin/imandra-http-api",
+        [| "/usr/local/bin/imandra-http-api"; "--skip-update" |] )
   in
   Log.debug (fun k -> k "Server started with PID %d..." process#pid);
-  (* Unix.sleep 120 *)
   Unix.sleep 10;
 
   let response =
@@ -25,8 +25,8 @@ let () =
             Eval_request_src.syntax = Some `Iml;
           }
     in
-    (* Log.debug (fun k -> k "Shutting down server..."); *)
-    (* let* _ = Default_api.shutdown () in *)
+    Log.debug (fun k -> k "Shutting down server...");
+    let* _ = Default_api.shutdown () in
     Lwt.return result
   in
 
