@@ -57,19 +57,21 @@ let instance_by_src ~instance_request_src_t =
     (JsonSupport.unwrap Instance_response.of_yojson)
     resp body
 
+(* TODO: fix in the server side to send reset info in the body? currently it returns "{}". *)
 let reset () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/reset" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `POST uri ~headers >>= fun (resp, body) ->
-  Request.read_json_body_as JsonSupport.to_string resp body
+  Request.read_string_body resp body
 
 let shutdown () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/shutdown" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `POST uri ~headers >>= fun (resp, body) ->
-  Request.read_json_body_as JsonSupport.to_string resp body
+  (* Request.read_json_body_as JsonSupport.to_string resp body *)
+  Request.read_string_body resp body
 
 let verify_by_name ~verify_request_name_t =
   let open Lwt.Infix in
