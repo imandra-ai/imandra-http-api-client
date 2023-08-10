@@ -11,7 +11,8 @@ let () =
   let process =
     Log.debug (fun k -> k "Starting server...");
     Lwt_process.open_process_full
-      ("/usr/local/bin/imandra-http-api", [| "--skip-update" |])
+      ( "/usr/local/bin/imandra-http-api",
+        [| "/usr/local/bin/imandra-http-api"; "--skip-update" |] )
   in
   Log.debug (fun k -> k "Server started with PID %d..." process#pid);
   (* Unix.sleep 120 *)
@@ -32,7 +33,7 @@ let () =
       Default_api.verify_by_src
         ~verify_request_src_t:
           {
-            Verify_request_src.src = "fun l -> List.rev (List.rev l) = l ";
+            Verify_request_src.src = "fun x -> List.rev (List.rev x) = x";
             Verify_request_src.syntax = Some `Iml;
             Verify_request_src.hints =
               Some
