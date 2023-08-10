@@ -7,9 +7,9 @@
 
 val eval : eval_request_src_t:Eval_request_src.t -> Yojson.Safe.t Lwt.t
 
-val get_history : unit -> Yojson.Safe.t Lwt.t
+val get_history : unit -> string Lwt.t
 
-val get_status : unit -> Yojson.Safe.t Lwt.t
+val get_status : unit -> string Lwt.t
 
 val instance_by_name :
   instance_request_name_t:Instance_request_name.t -> Yojson.Safe.t Lwt.t
@@ -17,9 +17,9 @@ val instance_by_name :
 val instance_by_src :
   instance_request_src_t:Instance_request_src.t -> Yojson.Safe.t Lwt.t
 
-val reset : unit -> Yojson.Safe.t Lwt.t
+val reset : unit -> string Lwt.t
 
-val shutdown : unit -> Yojson.Safe.t Lwt.t
+val shutdown : unit -> string Lwt.t
 
 val verify_by_name :
   verify_request_name_t:Verify_request_name.t -> Yojson.Safe.t Lwt.t

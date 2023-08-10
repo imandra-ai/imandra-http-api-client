@@ -20,14 +20,14 @@ let get_history () =
   let uri = Request.build_uri "/history" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `GET uri ~headers >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_string_body resp body
 
 let get_status () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/status" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `GET uri ~headers >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_string_body resp body
 
 let instance_by_name ~instance_request_name_t =
   let open Lwt.Infix in
@@ -59,7 +59,7 @@ let reset () =
   let uri = Request.build_uri "/reset" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `POST uri ~headers >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_string_body resp body
 
 let shutdown () =
   let open Lwt.Infix in
@@ -67,7 +67,7 @@ let shutdown () =
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `POST uri ~headers >>= fun (resp, body) ->
   (* Request.read_json_body_as JsonSupport.to_string resp body *)
-  Request.read_json_body resp body
+  Request.read_string_body resp body
 
 let verify_by_name ~verify_request_name_t =
   let open Lwt.Infix in
