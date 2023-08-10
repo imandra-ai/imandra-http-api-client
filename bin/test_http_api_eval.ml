@@ -30,7 +30,7 @@ let () =
     Lwt.return result
   in
 
-  let response = Lwt_main.run response |> Eval_response.to_yojson in
+  let response = Lwt_main.run response in
   Log.debug (fun k -> k "Received response %a..." Yojson.Safe.pp response);
   Log.debug (fun k -> k "Terminating server...");
   process#kill 11
