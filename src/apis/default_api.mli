@@ -17,6 +17,9 @@ val instance_by_name :
 val instance_by_src :
   instance_request_src_t:Instance_request_src.t -> Instance_response.t Lwt.t
 
+val instance_by_src2 :
+  instance_request_src_t:Instance_request_src.t -> Yojson.Safe.t Lwt.t
+
 val reset : unit -> string Lwt.t
 
 val shutdown : unit -> string Lwt.t
