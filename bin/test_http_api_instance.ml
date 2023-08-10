@@ -11,11 +11,12 @@ let () =
   let process =
     Log.debug (fun k -> k "Starting server...");
     Lwt_process.open_process_full
-      ("/usr/local/bin/imandra-http-api", [| "--skip-update" |])
+      ( "/usr/local/bin/imandra-http-api",
+        [| "/usr/local/bin/imandra-http-api"; "--skip-update" |] )
   in
   Log.debug (fun k -> k "Server started with PID %d..." process#pid);
   (* Unix.sleep 120 *)
-  Unix.sleep 10;
+  Unix.sleep 20;
 
   let response =
     Log.debug (fun k -> k "Sending query to server...");
