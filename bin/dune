@@ -6,10 +6,10 @@
   test_http_api_eval
   test_http_api_instance
   test_http_api_verify)
- (libraries imandra_http_api_client)
+ (libraries containers imandra_http_api_client)
  (modules test_http_api_eval test_http_api_instance test_http_api_verify))
 
 (test
  (name test_run)
- (libraries imandra_http_api_client)
+ (libraries containers imandra_http_api_client)
  (modules test_run))
