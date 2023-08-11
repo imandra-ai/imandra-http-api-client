@@ -30,6 +30,6 @@ run-verify: kill-process
 	
 generate-imandra-http-api-client:
 	export OCAML_POST_PROCESS_FILE="ocamlformat -i --enable-outside-detected-project"
-	docker run -u $(id -u):$(id -g) --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/imandra_http_api_client.swagger.yaml -g ocaml -o /local  -p packageName=imandra_http_api_client -p generateSourceCodeOnly=true --enable-post-process-file
+	docker run -u $(id -u):$(id -g) --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate -i /local/imandra_http_api_client.swagger.yaml -g ocaml -o /local  -p packageName=imandra_http_api_client -p generateSourceCodeOnly=true enablePostProcessFile=true
 
 .PHONY: all clean watch generate-imandra-http-api-client
