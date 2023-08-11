@@ -407,7 +407,7 @@ components:
           oneOf:
             - $ref: '#/components/schemas/UpToBody'
             - $ref: '#/components/schemas/WithInstanceBody'
-            - $ref: '#/components/schemas/WithUnknownReasonBody'
+            # - $ref: '#/components/schemas/WithUnknownReasonBody'
 
     Hints:
       type: object
