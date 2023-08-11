@@ -404,9 +404,9 @@ components:
         type:
           $ref: '#/components/schemas/InstanceResult'
         body:
-          oneOf:
-            - $ref: '#/components/schemas/UpToBody'
-            - $ref: '#/components/schemas/WithInstanceBody'
+          # oneOf:
+            # - $ref: '#/components/schemas/UpToBody'
+          $ref: '#/components/schemas/WithInstanceBody'
             # - $ref: '#/components/schemas/WithUnknownReasonBody'
 
     Hints:
