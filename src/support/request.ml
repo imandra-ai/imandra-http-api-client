@@ -49,9 +49,6 @@ let read_json_body resp body =
   handle_response resp (fun () ->
       Lwt.(Cohttp_lwt.Body.to_string body >|= Yojson.Safe.from_string))
 
-let read_string_body resp body =
-  handle_response resp (fun () -> Cohttp_lwt.Body.to_string body)
-
 let read_json_body_as of_json resp body =
   Lwt.(read_json_body resp body >|= of_json)
 

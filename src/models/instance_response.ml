@@ -7,7 +7,7 @@
 
 type t = {
   _type: Enums.instanceresult;
-  body: Verify_response_body.t option; [@default None]
+  body: With_instance_body.t option; [@default None]
 }
 [@@deriving yojson { strict = false }, show]
 

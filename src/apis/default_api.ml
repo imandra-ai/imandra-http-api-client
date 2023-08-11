@@ -13,21 +13,23 @@ let eval ~eval_request_src_t =
     Request.write_as_json_body Eval_request_src.to_yojson eval_request_src_t
   in
   Cohttp_lwt_unix.Client.call `POST uri ~headers ~body >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_json_body_as
+    (JsonSupport.unwrap Eval_response.of_yojson)
+    resp body
 
 let get_history () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/history" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `GET uri ~headers >>= fun (resp, body) ->
-  Request.read_string_body resp body
+  Request.read_json_body_as JsonSupport.to_string resp body
 
 let get_status () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/status" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `GET uri ~headers >>= fun (resp, body) ->
-  Request.read_string_body resp body
+  Request.read_json_body_as JsonSupport.to_string resp body
 
 let instance_by_name ~instance_request_name_t =
   let open Lwt.Infix in
@@ -38,7 +40,9 @@ let instance_by_name ~instance_request_name_t =
       instance_request_name_t
   in
   Cohttp_lwt_unix.Client.call `POST uri ~headers ~body >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_json_body_as
+    (JsonSupport.unwrap Instance_response.of_yojson)
+    resp body
 
 let instance_by_src ~instance_request_src_t =
   let open Lwt.Infix in
@@ -49,25 +53,23 @@ let instance_by_src ~instance_request_src_t =
       instance_request_src_t
   in
   Cohttp_lwt_unix.Client.call `POST uri ~headers ~body >>= fun (resp, body) ->
-  Request.read_json_body
-    (* (JsonSupport.unwrap Instance_response.of_yojson) *)
+  Request.read_json_body_as
+    (JsonSupport.unwrap Instance_response.of_yojson)
     resp body
 
-(* TODO: fix in the server side to send reset info in the body? currently it returns "{}". *)
 let reset () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/reset" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `POST uri ~headers >>= fun (resp, body) ->
-  Request.read_string_body resp body
+  Request.read_json_body_as JsonSupport.to_string resp body
 
 let shutdown () =
   let open Lwt.Infix in
   let uri = Request.build_uri "/shutdown" in
   let headers = Request.default_headers in
   Cohttp_lwt_unix.Client.call `POST uri ~headers >>= fun (resp, body) ->
-  (* Request.read_json_body_as JsonSupport.to_string resp body *)
-  Request.read_string_body resp body
+  Request.read_json_body_as JsonSupport.to_string resp body
 
 let verify_by_name ~verify_request_name_t =
   let open Lwt.Infix in
@@ -78,7 +80,9 @@ let verify_by_name ~verify_request_name_t =
       verify_request_name_t
   in
   Cohttp_lwt_unix.Client.call `POST uri ~headers ~body >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_json_body_as
+    (JsonSupport.unwrap Verify_response.of_yojson)
+    resp body
 
 let verify_by_src ~verify_request_src_t =
   let open Lwt.Infix in
@@ -88,4 +92,6 @@ let verify_by_src ~verify_request_src_t =
     Request.write_as_json_body Verify_request_src.to_yojson verify_request_src_t
   in
   Cohttp_lwt_unix.Client.call `POST uri ~headers ~body >>= fun (resp, body) ->
-  Request.read_json_body resp body
+  Request.read_json_body_as
+    (JsonSupport.unwrap Verify_response.of_yojson)
+    resp body
