@@ -50,19 +50,19 @@ let () =
   in
   let response = Lwt_main.run response in
 
-  Log.debug (fun k -> k "Received response %a..." Yojson.Safe.pp response);
+  Log.debug (fun k -> k "Received response %a..." Instance_response.pp response);
   Log.debug (fun k -> k "Decoding response...");
-  let decode = Instance_response.of_yojson response in
+  (* let decode = Instance_response.of_yojson response in *)
   let open CCOption in
-  (match decode with
-  | Ok dec ->
-    let somesrc =
-      let* body = dec.body in
-      let* model = body.instance.model in
-      let* src = model.src in
-      pure src
-    in
-    Log.debug (fun k -> k "Decoded string: %a" CCFormat.(some string) somesrc)
-  | Error str -> failwith str);
+  (* (match response with
+     | Ok dec -> *)
+  let somesrc =
+    let* body = response.body in
+    let* model = body.instance.model in
+    let* src = model.src in
+    pure src
+  in
+  Log.debug (fun k -> k "Decoded string: %a" CCFormat.(some string) somesrc);
+  (* | Error str -> failwith str); *)
   Log.debug (fun k -> k "Terminating server...");
   process#kill 11
