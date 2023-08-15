@@ -18,9 +18,9 @@
  (synopsis "Interact with Imandra via http from within OCaml.")
  (depends
   ocaml
-  ppx_deriving_yojson
   containers
   cohttp
   ppx_deriving
   cohttp-lwt-unix
-  ocaml-migrate-parsetree))
+  decoders
+  decoders-yojson))
