@@ -1,3 +1,7 @@
+(** This module should be standalone, and not require any Imandra internals! It
+    is distributed outside this repo by OCaml imandra-http-api clients for
+    shared type definitions *)
+
 let append_opt_key k f opt xs =
   match opt with
   | None -> xs
@@ -14,7 +18,7 @@ module Request = struct
     module Induct = struct
       type functional = { f_name: string }
 
-      type style = 
+      type style =
         | Multiplicative
         | Additive
 
@@ -90,7 +94,11 @@ module Request = struct
 end
 
 module Response = struct
-  type capture = { stdout: string; stderr: string }
+  type capture = {
+    stdout: string;
+    stderr: string;
+    raw_stdio: string option;
+  }
 
   type model = {
     syntax: src_syntax;
@@ -107,10 +115,7 @@ module Response = struct
 
   type with_unknown_reason = { unknown_reason: string }
 
-  type error = {
-    error: string;
-    capture: (capture * string) option;
-  }
+  type error = { error: string }
 
   type upto =
     | Upto_steps of int
@@ -128,13 +133,14 @@ module Response = struct
     | V_refuted of with_instance
     | V_unknown of with_unknown_reason
 
-  type eval_result =
-    { success: bool }
+  type eval_result = { success: bool }
 
-  type 'a ok_response =
-    { response: 'a
-    ; capture : capture
-    }
+  type reset_result = unit
+
+  type 'a ok_response = {
+    response: 'a;
+    capture: capture;
+  }
 
   type 'a response = ('a ok_response, error) result
 end
@@ -303,7 +309,7 @@ module Decoders (D : Decoders.Decode.S) = struct
         ]
 
     let error : my_error decoder =
-      field "error" string >>= fun e -> succeed { error = e; capture = None }
+      field "error" string >>= fun e -> succeed { error = e }
 
     let verify_result : verify_result decoder =
       field "type" string >>= function
@@ -320,6 +326,21 @@ module Decoders (D : Decoders.Decode.S) = struct
       | "sat" -> field "body" with_instance >|= fun x -> I_sat x
       | "unknown" -> field "body" with_unknown_reason >|= fun x -> I_unknown x
       | _ -> fail "Expected 'verified', 'refuted' or 'unknown'"
+
+    let eval_result : eval_result decoder =
+      field "success" bool >|= fun success -> { success }
+
+    let reset_result : reset_result decoder = succeed ()
+
+    let capture : Response.capture decoder =
+      field "stdout" string >>= fun stdout ->
+      field "stderr" string >>= fun stderr ->
+      field_opt "raw_stdio" string >>= fun raw_stdio ->
+      succeed { stdout; stderr; raw_stdio }
+
+    let ok_response (dec : 'a decoder) : 'a ok_response decoder =
+      capture >>= fun capture ->
+      dec >>= fun response -> succeed { response; capture }
   end
 end
 
@@ -452,12 +473,16 @@ module Encoders (E : D.Encode.S) = struct
         obj [ "type", string "unknown"; "body", with_unknown_reason x ]
 
     (** Encode capture as a list of fields to add to an object *)
-    let capture_fields (c : capture) (raw_stdio : string) : _ list =
-      let { stdout; stderr } = c in
-      [
-        "stdout", string stdout;
-        "stderr", string stderr;
-        "raw_stdio", string raw_stdio;
-      ]
+    let capture (c : capture) : _ list =
+      [ "stdout", string c.stdout; "stderr", string c.stderr ]
+      @
+      match c.raw_stdio with
+      | None -> []
+      | Some s -> [ "raw_stdio", string s ]
+
+    let eval_result : eval_result encoder =
+     fun x -> obj [ "success", bool x.success ]
+
+    let reset_result : reset_result encoder = fun () -> obj []
   end
 end

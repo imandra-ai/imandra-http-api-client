@@ -3,5 +3,5 @@
  (public_name imandra-http-api-client)
  (flags
   (:standard -w -27))
- (libraries str cohttp-lwt-unix lwt decoders decoders-yojson)
+ (libraries str cohttp-lwt-unix lwt decoders decoders-yojson containers)
  (wrapped true))
