@@ -4,8 +4,8 @@ synopsis: "Interact with Imandra via http from within OCaml."
 maintainer: ["the Imandra team and contributors"]
 authors: ["the Imandra team and contributors"]
 license: "MIT"
-homepage: "https://github.com/imandra-ai/imandra_http_api_client"
-bug-reports: "https://github.com/imandra-ai/imandra_http_api_client/issues"
+homepage: "https://github.com/imandra-ai/imandra-http_api-client"
+bug-reports: "https://github.com/imandra-ai/imandra-http_api-client/issues"
 depends: [
   "dune" {>= "2.7"}
   "ocaml"
@@ -31,4 +31,4 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/imandra-ai/imandra_http_api_client.git"
+dev-repo: "git+https://github.com/imandra-ai/imandra-http_api-client.git"
