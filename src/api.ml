@@ -1,5 +1,3 @@
-(* open Common *)
-
 let append_opt_key k f opt xs =
   match opt with
   | None -> xs
@@ -129,6 +127,16 @@ module Response = struct
     | V_proved_upto of upto
     | V_refuted of with_instance
     | V_unknown of with_unknown_reason
+
+  type eval_result =
+    { success: bool }
+
+  type 'a ok_response =
+    { response: 'a
+    ; capture : capture
+    }
+
+  type 'a response = ('a ok_response, error) result
 end
 
 module Decoders (D : Decoders.Decode.S) = struct
