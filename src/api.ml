@@ -137,12 +137,12 @@ module Response = struct
 
   type reset_result = unit
 
-  type 'a ok_response = {
+  type 'a with_capture = {
     body: 'a;
     capture: capture;
   }
 
-  type 'a response = ('a ok_response, error) result
+  type 'a response = ('a with_capture, error with_capture) result
 end
 
 module Decoders (D : Decoders.Decode.S) = struct
@@ -338,7 +338,7 @@ module Decoders (D : Decoders.Decode.S) = struct
       field_opt "raw_stdio" string >>= fun raw_stdio ->
       succeed { stdout; stderr; raw_stdio }
 
-    let ok_response (dec : 'a decoder) : 'a ok_response decoder =
+    let with_capture (dec : 'a decoder) : 'a with_capture decoder =
       capture >>= fun capture ->
       dec >>= fun body -> succeed { body; capture }
   end

@@ -14,7 +14,8 @@ module E = Api.Encoders (Decoders_yojson.Basic.Encode)
 module D = Api.Decoders (Decoders_yojson.Basic.Decode)
 
 type error =
-  [ `Error_response of Cohttp.Code.status_code * Api.Response.error
+  [ `Error_response of
+    Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
   | `Error_decoding_response of Decoders_yojson.Basic.Decode.error
   ]
 
@@ -32,26 +33,28 @@ let default_headers (c : Config.t) =
 let make_body enc x =
   Decoders_yojson.Basic.Encode.encode_string enc x |> Cohttp_lwt.Body.of_string
 
-let read_ok_response dec s =
+let read_response dec s =
   match
-    Decoders_yojson.Basic.Decode.decode_string (D.Response.ok_response dec) s
+    Decoders_yojson.Basic.Decode.decode_string (D.Response.with_capture dec) s
   with
   | Ok err -> Ok err
   | Error e -> Error (`Error_decoding_response e)
 
 let read_error s =
-  match Decoders_yojson.Basic.Decode.decode_string D.Response.error s with
+  match
+    Decoders_yojson.Basic.Decode.decode_string D.Response.(with_capture error) s
+  with
   | Ok err -> Ok err
   | Error e -> Error (`Error_decoding_response e)
 
 let read (dec : 'a Decoders_yojson.Basic.Decode.decoder) (resp, body) :
-    ('a Api.Response.ok_response, error) Lwt_result.t =
+    ('a Api.Response.with_capture, error) Lwt_result.t =
   let open Lwt.Syntax in
   let* body = Cohttp_lwt.Body.to_string body in
   let status = Cohttp.Response.status resp in
   let res =
     if status = `OK then
-      read_ok_response dec body |> CCResult.flat_map (fun ok -> Ok ok)
+      read_response dec body |> CCResult.flat_map (fun ok -> Ok ok)
     else
       read_error body
       |> CCResult.flat_map (fun err -> Error (`Error_response (status, err)))
