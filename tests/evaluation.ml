@@ -2,7 +2,7 @@ module Client = Imandra_http_api_client
 
 let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
   [
-    Alcotest_lwt.test_case "let f x = x + 1" `Quick (fun _ () ->
+    Alcotest_lwt.test_case "Evaluating let f x = x + 1." `Quick (fun _ () ->
         let config = Client.Config.make ~base_uri:"http://localhost:3000" () in
 
         Log.debug (fun k -> k "Sending query to server...");

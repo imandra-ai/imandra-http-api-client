@@ -22,6 +22,6 @@ let () =
   Lwt_main.run
   @@
   (Lwt_main.at_exit (fun () ->
-       Log.debug (fun k -> k "Terminating server...");
+       (* Log.debug (fun k -> k "Terminating server..."); *)
        Lwt.return @@ process#kill 11);
    Alcotest_lwt.run "imandra-http-api-client" suite)
