@@ -1,2 +1,5 @@
 _build/
 .imandra_init.log
+_opam/
+.envrc
+.direnv/

@@ -1,4 +1,5 @@
-open Imandra_http_api_client
+module Client = Imandra_http_api_client
+module Api = Imandra_http_api_client.Api
 
 let () = Printexc.record_backtrace true
 
@@ -16,53 +17,36 @@ let () =
   in
   Log.debug (fun k -> k "Server started with PID %d..." process#pid);
   (* Unix.sleep 120 *)
-  Unix.sleep 20;
+  Unix.sleep 10;
+
+  let config = Client.Config.make ~base_uri:"http://localhost:3000" () in
 
   let response =
     Log.debug (fun k -> k "Sending query to server...");
     let* _ =
-      Default_api.eval
-        ~eval_request_src_t:
-          {
-            Imandra_http_api_client__Eval_request_src.src =
-              "let foo (x : int) = x + 1 ";
-            Imandra_http_api_client__Eval_request_src.syntax = Some `Iml;
-          }
+      Client.eval config { src = "let foo (x : int) = x + 1 "; syntax = Iml }
     in
     let* result =
-      Default_api.instance_by_src
-        ~instance_request_src_t:
-          {
-            Instance_request_src.src = "fun (x : int) -> foo x > 4";
-            Instance_request_src.syntax = Some `Iml;
-            Instance_request_src.hints = None;
-            Instance_request_src.instance_printer =
-              Some
-                {
-                  Imandra_http_api_client__Printer_details.name = "Z.sprint ()";
-                  Imandra_http_api_client__Printer_details.cx_var_name = "x";
-                };
-          }
+      Client.instance_by_src config
+        {
+          src = "fun (x : int) -> foo x > 4";
+          syntax = Iml;
+          hints = None;
+          instance_printer = Some { name = "Z.sprint ()"; cx_var_name = "x" };
+        }
     in
     Log.debug (fun k -> k "Shutting down server...");
-    let* _ = Default_api.shutdown () in
+    let* _ = Client.shutdown config () in
     Lwt.return result
   in
   let response = Lwt_main.run response in
 
-  Log.debug (fun k -> k "Received response %a..." Yojson.Safe.pp response);
-  Log.debug (fun k -> k "Decoding response...");
-  let decode = Instance_response.of_yojson response in
-  let open CCOption in
-  (match decode with
-  | Ok dec ->
-    let somesrc =
-      let* body = dec.body in
-      let* model = body.instance.model in
-      let* src = model.src in
-      pure src
-    in
-    Log.debug (fun k -> k "Decoded string: %a" CCFormat.(some string) somesrc)
-  | Error str -> failwith str);
+  (match response with
+  | Ok { body = I_sat { instance }; _ } ->
+    Log.debug (fun k ->
+        k "Model string: %a" CCFormat.(string) instance.model.src);
+    Log.debug (fun k ->
+        k "Printed string: %a" CCFormat.(some string) instance.printed)
+  | _ -> Log.err (fun k -> k "Unexpected response"));
   Log.debug (fun k -> k "Terminating server...");
   process#kill 11
