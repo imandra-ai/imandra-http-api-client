@@ -1,4 +1,5 @@
-open Imandra_http_api_client
+module Client = Imandra_http_api_client
+module Api = Imandra_http_api_client.Api
 
 let () = Printexc.record_backtrace true
 
@@ -18,40 +19,29 @@ let () =
   (* Unix.sleep 120 *)
   Unix.sleep 20;
 
+  let config = Client.Config.make ~base_uri:"http://localhost:3000" () in
+
   let response =
     Log.debug (fun k -> k "Sending query to server...");
     let* _ =
-      Default_api.eval
-        ~eval_request_src_t:
-          {
-            Imandra_http_api_client__Eval_request_src.src =
-              "let foo (x : int) = x + 1 ";
-            Imandra_http_api_client__Eval_request_src.syntax = Some `Iml;
-          }
+      Client.eval config { src = "let foo (x : int) = x + 1 "; syntax = Iml }
     in
     let* result =
-      Default_api.verify_by_src
-        ~verify_request_src_t:
-          {
-            Verify_request_src.src = "fun x -> List.rev (List.rev x) = x";
-            Verify_request_src.syntax = Some `Iml;
-            Verify_request_src.hints =
-              Some
-                {
-                  Imandra_http_api_client__Hints._method =
-                    {
-                      Imandra_http_api_client__Model_method._type = `Auto;
-                      Imandra_http_api_client__Model_method.body = None;
-                    };
-                };
-            Verify_request_src.instance_printer = None;
-          }
+      Client.verify_by_src config
+        {
+          src = "fun x -> List.rev (List.rev x) = x";
+          syntax = Iml;
+          hints = Some { method_ = Auto };
+          instance_printer = None;
+        }
     in
     Log.debug (fun k -> k "Shutting down server...");
-    let* _ = Default_api.shutdown () in
+    let* _ = Client.shutdown config () in
     Lwt.return result
   in
   let response = Lwt_main.run response in
-  Log.debug (fun k -> k "Received response %a..." Yojson.Safe.pp response);
+  (match response with
+  | Ok { body = V_proved; _ } -> Log.debug (fun k -> k "Proved!")
+  | _ -> Log.err (fun k -> k "Unexpected response"));
   Log.debug (fun k -> k "Terminating server...");
   process#kill 11

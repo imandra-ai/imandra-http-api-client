@@ -138,7 +138,7 @@ module Response = struct
   type reset_result = unit
 
   type 'a ok_response = {
-    response: 'a;
+    body: 'a;
     capture: capture;
   }
 
@@ -340,7 +340,7 @@ module Decoders (D : Decoders.Decode.S) = struct
 
     let ok_response (dec : 'a decoder) : 'a ok_response decoder =
       capture >>= fun capture ->
-      dec >>= fun response -> succeed { response; capture }
+      dec >>= fun body -> succeed { body; capture }
   end
 end
 
