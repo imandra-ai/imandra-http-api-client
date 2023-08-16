@@ -2,7 +2,8 @@ module Client = Imandra_http_api_client
 
 let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
   [
-    Alcotest_lwt.test_case "List.rev (List.rev x) = x" `Quick (fun _ () ->
+    Alcotest_lwt.test_case "Proving List.rev (List.rev x) = x." `Quick
+      (fun _ () ->
         let open Lwt.Syntax in
         let config = Client.Config.make ~base_uri:"http://localhost:3000" () in
         let* result =
@@ -20,8 +21,6 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
                 instance_printer = None;
               }
           in
-          Log.debug (fun k -> k "Shutting down server...");
-          let* _ = Client.shutdown config () in
           Lwt.return result
         in
         match result with
