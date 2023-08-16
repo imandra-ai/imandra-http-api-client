@@ -1,0 +1,4 @@
+(test
+ (name test_run)
+ (libraries alcotest-lwt alcotest imandra_http_api_client)
+ (modules test_run))
