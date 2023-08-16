@@ -5,7 +5,7 @@
 (generate_opam_files true)
 
 (source
- (github imandra-ai/imandra-http_api-client))
+ (github imandra-ai/imandra-http-api-client))
 
 (authors "the Imandra team and contributors")
 
