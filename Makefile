@@ -5,6 +5,9 @@ killcmd = $(if $(PID), "kill" "-9" $(PID), "echo" "No process running on port :$
 all:
 	@dune build @install
 
+tests:
+	dune runtest --force
+
 clean:
 	@dune clean
 
@@ -28,11 +31,11 @@ run-eval: kill-process
 run-verify: kill-process
 	dune exec test_http_api_verify
 
-.PHONY: all clean watch generate-imandra-http-api-client
-
 _opam:
 	opam switch create . --empty
 	opam switch set-invariant ocaml-base-compiler.4.12.1
 
 opam-install-deps: _opam
 	opam install ./imandra-http-api-client.opam -y --deps-only
+
+.PHONY: all clean watch generate-imandra-http-api-client tests
