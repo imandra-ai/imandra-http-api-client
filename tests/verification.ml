@@ -5,7 +5,7 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
     Alcotest_lwt.test_case "Proving List.rev (List.rev x) = x." `Quick
       (fun _ () ->
         let open Lwt.Syntax in
-        let config = Client.Config.make ~base_uri:"http://localhost:3000" () in
+        let config = Client.Config.make ~base_uri:"http://127.0.0.1:3000" () in
         let* result =
           Log.debug (fun k -> k "Sending query to server...");
           let* _ =

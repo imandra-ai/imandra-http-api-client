@@ -17,7 +17,7 @@ let () =
   Log.debug (fun k -> k "Server started with PID %d..." process#pid);
   Unix.sleep 10;
 
-  let config = Client.Config.make ~base_uri:"http://localhost:3000" () in
+  let config = Client.Config.make ~base_uri:"http://127.0.0.1:3000" () in
 
   let response =
     Log.debug (fun k -> k "Sending query to server...");
