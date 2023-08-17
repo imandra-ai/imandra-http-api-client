@@ -1,0 +1,14 @@
+(executable
+ (name test_main)
+ (modules test_main)
+ (libraries client_tests imandra_http_api_client alcotest alcotest-lwt))
+
+(library
+ (name client_tests)
+ (modules :standard \ test_main)
+ (libraries imandra_http_api_client alcotest alcotest-lwt))
+
+(rule
+ (alias runtest)
+ (action
+  (run ./test_main.exe)))

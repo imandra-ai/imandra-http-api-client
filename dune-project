@@ -23,4 +23,6 @@
   ppx_deriving
   cohttp-lwt-unix
   decoders
-  decoders-yojson))
+  decoders-yojson
+  alcotest
+  alcotest-lwt))
