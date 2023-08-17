@@ -15,10 +15,6 @@ WATCH?= @install
 watch:
 	@dune build $(WATCH) -w
 
-runtest:
-	imandra-http-api
-	@dune build @runtest
-
 kill-process:
 	@$(killcmd)
 
@@ -38,4 +34,4 @@ _opam:
 opam-install-deps: _opam
 	opam install ./imandra-http-api-client.opam -y --deps-only
 
-.PHONY: all clean watch generate-imandra-http-api-client tests
+.PHONY: all clean watch tests
