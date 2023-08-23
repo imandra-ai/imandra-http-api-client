@@ -2,6 +2,8 @@
 Query Imandra via HTTP. See also https://github.com/aestheticIntegration/bs-imandra-client for a sample client implementation and OCaml API types.
 
 ## Installation 
+This repository uses Nix and [Nix flakes](https://nixos.wiki/wiki/Flakes) for system-level dependencies. 
+
 To install dependencies and build the project, please clone this repository and run:
 ```
 make opam-install-deps
