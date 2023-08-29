@@ -202,3 +202,8 @@ val verify_by_src :
   Config.t ->
   Api.Request.verify_req_src ->
   (Api.Response.verify_result Api.Response.with_capture, error) result Lwt.t
+
+val decompose :
+  Config.t ->
+  Api.Request.decomp_req_src ->
+  (Yojson.Basic.t Api.Response.decompose_result Api.Response.with_capture, error) result Lwt.t

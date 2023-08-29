@@ -135,11 +135,19 @@ module Response = struct
 
   type eval_result = { success: bool }
 
+  type 'json decompose_region = {
+    ast_json: 'json;
+    invariant_pp: string;
+    constraints_pp: string list;
+  }
+
+  type 'json decompose_result = { regions: 'json decompose_region list }
+
   type reset_result = unit
 
   type 'a with_capture = {
     body: 'a;
-    capture: capture;
+    capture: capture option;
   }
 
   type 'a response = ('a with_capture, error with_capture) result
@@ -332,14 +340,26 @@ module Decoders (D : Decoders.Decode.S) = struct
 
     let reset_result : reset_result decoder = succeed ()
 
-    let capture : Response.capture decoder =
-      field "stdout" string >>= fun stdout ->
-      field "stderr" string >>= fun stderr ->
+    let decompose_region : value decompose_region decoder =
+      field "invariant_pp" string >>= fun invariant_pp ->
+      field "constraints_pp" (list string) >>= fun constraints_pp ->
+      field "ast_json" value >>= fun ast_json ->
+      succeed { invariant_pp; constraints_pp; ast_json }
+
+    let decompose_result : value decompose_result decoder =
+      field "regions" (list decompose_region) >>= fun regions ->
+      succeed { regions }
+
+    let opt_capture : Response.capture option decoder =
+      field_opt "stdout" string >>= fun stdout ->
+      field_opt "stderr" string >>= fun stderr ->
       field_opt "raw_stdio" string >>= fun raw_stdio ->
-      succeed { stdout; stderr; raw_stdio }
+      match stdout, stderr with
+      | Some stdout, Some stderr -> succeed (Some { stdout; stderr; raw_stdio })
+      | _ -> succeed None
 
     let with_capture (dec : 'a decoder) : 'a with_capture decoder =
-      capture >>= fun capture ->
+      opt_capture >>= fun capture ->
       dec >>= fun body -> succeed { body; capture }
   end
 end
@@ -433,6 +453,13 @@ module Encoders (E : D.Encode.S) = struct
 
     let eval_req_src (x : Request.eval_req_src) =
       obj [ "syntax", src_syntax x.syntax; "src", string x.src ]
+
+    let decomp_req_src (x : Request.decomp_req_src) = 
+      obj
+        ([ "name", string x.name; "prune", bool x.prune ]
+        |> append_opt_key "assuming" string x.assuming 
+        |> append_opt_key "max_rounds" int x.max_rounds 
+        |> append_opt_key "stop_at" int x.stop_at)
   end
 
   module Response = struct
@@ -484,5 +511,16 @@ module Encoders (E : D.Encode.S) = struct
      fun x -> obj [ "success", bool x.success ]
 
     let reset_result : reset_result encoder = fun () -> obj []
+
+    let decompose_region (x : value decompose_region) =
+      obj
+        [
+          "ast_json", value x.ast_json;
+          "invariant_pp", string x.invariant_pp;
+          "constraints_pp", (list string) x.constraints_pp;
+        ]
+
+    let decompose_result (x : value decompose_result) =
+      obj [ "regions", (list decompose_region) x.regions ]
   end
 end
