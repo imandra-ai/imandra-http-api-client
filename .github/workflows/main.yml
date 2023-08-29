@@ -29,14 +29,14 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - name: Install Imandra
+        run: sh <(curl -s "https://storage.googleapis.com/imandra-do/install.sh")
       - name: Install project dependencies
         run: opam install . --deps-only --with-doc --with-test
       - name: Build the project
         run: opam exec -- dune build @install
-
-      # TODO: Reenable this once we figure out how to get imandra server running in the CI. 
-      # - name: Run tests
-      #   run: opam exec -- dune runtest
+      - name: Run tests
+        run: opam exec -- dune runtest
 
       # - name: Upload the build artifact
       #   uses: actions/upload-artifact@v2
