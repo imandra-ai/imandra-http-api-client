@@ -23,8 +23,6 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
                   Some { name = "Z.sprint ()"; cx_var_name = "x" };
               }
           in
-          Log.debug (fun k -> k "Shutting down server...");
-          let* _ = Client.shutdown config () in
           Lwt.return result
         in
         match response with

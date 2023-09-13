@@ -7,6 +7,7 @@ let suite : unit Alcotest_lwt.test list =
     "eval", Evaluation.tests (module Log);
     "verfication", Verification.tests (module Log);
     "instance", Instance.tests (module Log);
+    "decomp", Decompose.tests (module Log);
   ]
 
 let () =
