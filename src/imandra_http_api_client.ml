@@ -128,3 +128,11 @@ let verify_by_src (c : Config.t) req =
   let body = make_body E.Request.verify_req_src req in
   let* res = Cohttp_lwt_unix.Client.call `POST uri ~headers ~body in
   read D.Response.verify_result res
+
+let decompose (c : Config.t) req =
+  let open Lwt.Syntax in
+  let uri = build_uri c "/decompose" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.decomp_req_src req in
+  let* res = Cohttp_lwt_unix.Client.call `POST uri ~headers ~body in
+  read D.Response.decompose_result res

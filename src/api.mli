@@ -126,11 +126,19 @@ module Response : sig
 
   type eval_result = { success: bool }
 
+  type 'json decompose_region = {
+    ast_json: 'json;
+    invariant_pp: string;
+    constraints_pp: string list;
+  }
+
+  type 'json decompose_result = { regions: 'json decompose_region list }
+
   type reset_result = unit
 
   type 'a with_capture = {
     body: 'a;
-    capture: capture;
+    capture: capture option;
   }
 
   type 'a response = ('a with_capture, error with_capture) result
@@ -200,7 +208,9 @@ module Decoders : functor (D : Decoders.Decode.S) -> sig
 
     val reset_result : unit D.decoder
 
-    val capture : Response.capture D.decoder
+    val decompose_result : D.value Response.decompose_result D.decoder
+
+    val opt_capture : Response.capture option D.decoder
 
     val with_capture : 'a D.decoder -> 'a Response.with_capture D.decoder
   end
@@ -244,6 +254,8 @@ module Encoders : functor (E : D.Encode.S) -> sig
 
     val instance_req_name : Request.instance_req_name -> E.value
 
+    val decomp_req_src : Request.decomp_req_src -> E.value
+
     val eval_req_src : Request.eval_req_src -> E.value
   end
 
@@ -263,6 +275,8 @@ module Encoders : functor (E : D.Encode.S) -> sig
     val verify_result : Response.verify_result E.encoder
 
     val instance_result : Response.instance_result E.encoder
+
+    val decompose_result : E.value Response.decompose_result E.encoder
 
     val capture : Response.capture -> (string * E.value) list
 
