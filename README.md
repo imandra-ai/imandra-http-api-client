@@ -12,9 +12,13 @@ make all
 
 ## Getting Started
 
-We assume that you have `imandra-http-api` running on localhost at port 3000. With this setup, tests can be run using `dune runtest`. 
-The `imandra_http_api_client.mli` interface file has functions which interact with various endpoints. 
+Please first install [Imandra](https://docs.imandra.ai/imandra-docs/notebooks/installation/). This should provide a binary `imandra-http-api`.
 
+With `imandra-http-api` running on localhost at port 3000, tests can be run using `make tests`.
+
+## Usage
+With the server running on port 3000 as above, one can interact with the server using endpoints via functions defined in the `imandra_http_api_client.mli` interface file.
+ 
 Here is an example of using the `eval` string to evaluate the expression `let foo x = x + 1` and then shutting down the server: 
 
 ```ocaml 
