@@ -16,6 +16,7 @@
 (package
  (name imandra-http-api-client)
  (synopsis "Interact with Imandra via http from within OCaml.")
+ (version 0.1)
  (depends
   ocaml
   containers
