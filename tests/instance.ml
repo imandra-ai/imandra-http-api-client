@@ -8,7 +8,7 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
         let config = Client.Config.make ~base_uri:"http://127.0.0.1:3000" () in
 
         let* response =
-          Log.debug (fun k -> k "Sending query to server...");
+          let* () = Logs_lwt.debug (fun k -> k "Sending query to server...") in
           let* _ =
             Client.eval config
               { src = "let bla (x : int) = x + 1 "; syntax = Iml }

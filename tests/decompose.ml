@@ -7,7 +7,7 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
         let config = Client.Config.make ~base_uri:"http://127.0.0.1:3000" () in
 
         let* response =
-          Log.debug (fun k -> k "Sending query to server...");
+          let* () = Logs_lwt.debug (fun k -> k "Sending query to server...") in
           let* _ =
             Client.eval config
               { src = "let boo (x : int) = x > 1 "; syntax = Iml }
@@ -22,7 +22,7 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
                 Imandra_http_api_client__Api.Request.stop_at = None;
               }
           in
-          Log.debug (fun k -> k "Shutting down server...");
+          let* () = Logs_lwt.debug (fun k -> k "Shutting down server...") in
           let* _ = Client.shutdown config () in
           Lwt.return result
         in
