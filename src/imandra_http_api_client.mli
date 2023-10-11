@@ -84,8 +84,6 @@ module D : sig
   module Request : sig
     module Hints : sig
       module Induct : sig
-        (* val structural : *)
-        (*   (Yojson.Basic.t, Api.Request.Hints.Induct.t) Decoders.Decoder.t *)
         val structural :
           Api.Request.Hints.Induct.t Decoders_yojson.Basic.Decode.decoder
 
