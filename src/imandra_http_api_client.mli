@@ -98,7 +98,7 @@ module D : sig
           Api.Request.Hints.Method.unroll Decoders_yojson.Basic.Decode.decoder
 
         val ext_solver :
-            Api.Request.Hints.Method.ext_solver
+          Api.Request.Hints.Method.ext_solver
           Decoders_yojson.Basic.Decode.decoder
 
         val t : Api.Request.Hints.Method.t Decoders_yojson.Basic.Decode.decoder
@@ -163,46 +163,55 @@ val read_error :
 val read :
   'a Decoders_yojson.Basic.Decode.decoder ->
   Cohttp.Response.t * Cohttp_lwt.Body.t ->
-  ('a Api.Response.with_capture, [> error] ) Lwt_result.t
+  ('a Api.Response.with_capture, [> error ]) Lwt_result.t
 
 val eval :
   Config.t ->
   Api.Request.eval_req_src ->
-  (Api.Response.eval_result Api.Response.with_capture, [> error]) result Lwt.t
+  (Api.Response.eval_result Api.Response.with_capture, [> error ]) result Lwt.t
 
 val get_history :
-  Config.t -> (string Api.Response.with_capture, [> error]) result Lwt.t
+  Config.t -> (string Api.Response.with_capture, [> error ]) result Lwt.t
 
 val get_status :
-  Config.t -> (string Api.Response.with_capture, [> error]) result Lwt.t
+  Config.t -> (string Api.Response.with_capture, [> error ]) result Lwt.t
 
 val instance_by_name :
   Config.t ->
   Api.Request.instance_req_name ->
-  (Api.Response.instance_result Api.Response.with_capture, [> error]) result Lwt.t
+  (Api.Response.instance_result Api.Response.with_capture, [> error ]) result
+  Lwt.t
 
 val instance_by_src :
   Config.t ->
   Api.Request.instance_req_src ->
-  (Api.Response.instance_result Api.Response.with_capture, [> error]) result Lwt.t
+  (Api.Response.instance_result Api.Response.with_capture, [> error ]) result
+  Lwt.t
 
 val reset :
-  Config.t -> unit -> (unit Api.Response.with_capture, [> error]) result Lwt.t
+  Config.t -> unit -> (unit Api.Response.with_capture, [> error ]) result Lwt.t
 
 val shutdown :
-  Config.t -> unit -> (string Api.Response.with_capture, [> error]) result Lwt.t
+  Config.t ->
+  unit ->
+  (string Api.Response.with_capture, [> error ]) result Lwt.t
 
 val verify_by_name :
   Config.t ->
   Api.Request.verify_req_name ->
-  (Api.Response.verify_result Api.Response.with_capture, [> error]) result Lwt.t
+  (Api.Response.verify_result Api.Response.with_capture, [> error ]) result
+  Lwt.t
 
 val verify_by_src :
   Config.t ->
   Api.Request.verify_req_src ->
-  (Api.Response.verify_result Api.Response.with_capture, [> error]) result Lwt.t
+  (Api.Response.verify_result Api.Response.with_capture, [> error ]) result
+  Lwt.t
 
 val decompose :
   Config.t ->
   Api.Request.decomp_req_src ->
-  (Yojson.Basic.t Api.Response.decompose_result Api.Response.with_capture, [> error]) result Lwt.t
+  ( Yojson.Basic.t Api.Response.decompose_result Api.Response.with_capture,
+    [> error ] )
+  result
+  Lwt.t

@@ -33,7 +33,7 @@ let default_headers (c : Config.t) =
 let make_body enc x =
   Decoders_yojson.Basic.Encode.encode_string enc x |> Cohttp_lwt.Body.of_string
 
-let read_response dec s=
+let read_response dec s =
   match
     Decoders_yojson.Basic.Decode.decode_string (D.Response.with_capture dec) s
   with
