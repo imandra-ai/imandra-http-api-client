@@ -454,11 +454,11 @@ module Encoders (E : D.Encode.S) = struct
     let eval_req_src (x : Request.eval_req_src) =
       obj [ "syntax", src_syntax x.syntax; "src", string x.src ]
 
-    let decomp_req_src (x : Request.decomp_req_src) = 
+    let decomp_req_src (x : Request.decomp_req_src) =
       obj
         ([ "name", string x.name; "prune", bool x.prune ]
-        |> append_opt_key "assuming" string x.assuming 
-        |> append_opt_key "max_rounds" int x.max_rounds 
+        |> append_opt_key "assuming" string x.assuming
+        |> append_opt_key "max_rounds" int x.max_rounds
         |> append_opt_key "stop_at" int x.stop_at)
   end
 

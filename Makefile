@@ -34,4 +34,7 @@ _opam:
 opam-install-deps: _opam
 	opam install ./imandra-http-api-client.opam -y --deps-only
 
+format:
+	@dune build @fmt --auto-promote
+
 .PHONY: all clean watch tests
