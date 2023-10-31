@@ -6,5 +6,5 @@
   test_http_api_eval
   test_http_api_instance
   test_http_api_verify)
- (libraries containers imandra_http_api_client eio eio_main)
+ (libraries containers imandra_http_api_client eio eio_main lwt_eio)
  (modules test_http_api_eval test_http_api_instance test_http_api_verify))
