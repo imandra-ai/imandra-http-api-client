@@ -39,8 +39,12 @@ let () =
     let* _ = Client.shutdown config () in
     Lwt.return result
   in
-  let response = Lwt_main.run response in
-
+  (* let response = Lwt_main.run response in *)
+  let response =
+    Eio_main.run @@ fun env ->
+    Lwt_eio.with_event_loop ~clock:env#clock @@ fun _ ->
+    Lwt_eio.run_lwt @@ fun () -> response
+  in
   (match response with
   | Ok { body = I_sat { instance }; _ } ->
     Log.debug (fun k ->

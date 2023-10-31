@@ -33,6 +33,10 @@ let () =
     Lwt.return ()
   in
 
-  let () = Lwt_main.run response in
+  let () =
+    Eio_main.run @@ fun env ->
+    Lwt_eio.with_event_loop ~clock:env#clock @@ fun _ ->
+    Lwt_eio.run_lwt @@ fun () -> response
+  in
   Log.debug (fun k -> k "Terminating server...");
   process#kill 11

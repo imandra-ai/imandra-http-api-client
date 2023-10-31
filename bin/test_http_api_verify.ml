@@ -39,7 +39,11 @@ let () =
     let* _ = Client.shutdown config () in
     Lwt.return result
   in
-  let response = Lwt_main.run response in
+  let response =
+    Eio_main.run @@ fun env ->
+    Lwt_eio.with_event_loop ~clock:env#clock @@ fun _ ->
+    Lwt_eio.run_lwt @@ fun () -> response
+  in
   (match response with
   | Ok { body = V_proved; _ } -> Log.debug (fun k -> k "Proved!")
   | _ -> Log.err (fun k -> k "Unexpected response"));
