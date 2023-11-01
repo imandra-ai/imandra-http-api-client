@@ -1,10 +1,19 @@
 (include_subdirs no)
 
 (executables
- (names test_http_api_eval test_http_api_instance test_http_api_verify)
+ (names
+  test_http_api_eval
+  test_http_api_instance
+  test_http_api_verify
+  tests_timeout)
  (public_names
   test_http_api_eval
   test_http_api_instance
-  test_http_api_verify)
+  test_http_api_verify
+  tests_timeout)
  (libraries containers imandra_http_api_client)
- (modules test_http_api_eval test_http_api_instance test_http_api_verify))
+ (modules
+  test_http_api_eval
+  test_http_api_instance
+  test_http_api_verify
+  tests_timeout))
