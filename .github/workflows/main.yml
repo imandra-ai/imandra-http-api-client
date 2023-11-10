@@ -29,6 +29,12 @@ jobs:
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
+      - name: Install system dependencies. 
+        run: |
+          sudo apt-get update
+          sudo apt-get install libgdbm6 
+          sudo apt-get install libgdbm-dev
+          sudo apt-get install libzmq3-dev
       - name: Install project dependencies
         run: opam install . --deps-only --with-doc --with-test
       - name: Build the project
