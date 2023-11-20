@@ -54,7 +54,8 @@ jobs:
 
       - name: Install Imandra.
         run: |
-            sh <(curl -s "https://storage.googleapis.com/imandra-installer/install.sh")
+            curl -O "https://storage.googleapis.com/imandra-installer/install.sh" 
+            sh ./install.sh
           
       - name: Authenticate Imandra. 
         run: 
