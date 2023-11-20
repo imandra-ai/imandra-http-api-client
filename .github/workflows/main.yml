@@ -38,38 +38,31 @@ jobs:
           sudo apt-get install libzmq3-dev
       - name: Install project dependencies
         run: opam install . --deps-only --with-doc --with-test
+
+      # - name: Restore imandra-tmp opam cache.
+      #   uses: actions/cache@v2
+      #   id: imandracache
+      #   with:
+      #     path: |
+      #       /tmp/imandra-tmp/_opam
+      #     key: ${{ matrix.os }}-imandra-http-api
+    
+      # - name: Copy Imandra HTTP API 
+      #   if: steps.imandracache.outputs.cache-hit == 'true'
+      #   run: 
+      #     cp /tmp/imandra-tmp/_opam/bin/imandra-http-api /usr/local/bin
+
+      - name: Install Imandra.
+        run: |
+            sh <(curl -s "https://storage.googleapis.com/imandra-installer/install.sh")
+          
+      - name: Authenticate Imandra. 
+        run: 
+          echo ${{ secrets.IMANDRA_AUTH_TOKEN }} > token.txt
+          imandra auth import < token.txt
+
       - name: Build the project
         run: opam exec -- dune build @install
 
-      - name: Restore imandra-tmp opam cache.
-        uses: actions/cache@v2
-        id: imandracache
-        with:
-          path: |
-            /tmp/imandra-tmp/_opam
-          key: ${{ matrix.os }}-imandra-http-api
-    
-      - name: Copy Imandra HTTP API 
-        if: steps.imandracache.outputs.cache-hit == 'true'
-        run: 
-          cp /tmp/imandra-tmp/_opam/bin/imandra-http-api /usr/local/bin
-
-      - name: Install Imandra HTTP API (if not available).
-        if: steps.imandracache.outputs.cache-hit != 'true'
-        run: |
-            mkdir -p /tmp/imandra-tmp && cd /tmp/imandra-tmp
-            opam switch create . --empty
-            opam repo add imandra https://github.com/AestheticIntegration/opam-repository.git
-            opam update
-            opam install imandra-http-api
-            cp _opam/bin/imandra-http-api /usr/local/bin/
-            
-      # TODO: Reenable this once we figure out how to get imandra server running in the CI. 
       - name: Run tests
         run: opam exec -- dune runtest
-
-      # - name: Upload the build artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-world.exe
-      #     path: _build/default/world.exe
