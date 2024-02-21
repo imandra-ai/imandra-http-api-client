@@ -1,4 +1,4 @@
-module Client = Imandra_http_api_client
+module Client = Imandra_http_api_client.Main
 module Api = Imandra_http_api_client.Api
 
 module Log = (val Logs.src_log (Logs.Src.create "imandra-http-api-local"))

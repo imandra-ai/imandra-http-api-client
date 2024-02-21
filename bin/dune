@@ -1,10 +1,25 @@
 (include_subdirs no)
 
 (executables
- (names test_http_api_eval test_http_api_instance test_http_api_verify)
+ (names
+  test_http_api_eval
+  test_http_api_instance
+  test_http_api_verify
+  test_eio)
  (public_names
   test_http_api_eval
   test_http_api_instance
-  test_http_api_verify)
- (libraries containers imandra_http_api_client eio eio_main lwt_eio)
- (modules test_http_api_eval test_http_api_instance test_http_api_verify))
+  test_http_api_verify
+  test_eio)
+ (libraries
+  containers
+  cohttp-eio
+  eio
+  imandra_http_api_client
+  eio_main
+  lwt_eio)
+ (modules
+  test_http_api_eval
+  test_http_api_instance
+  test_http_api_verify
+  test_eio))

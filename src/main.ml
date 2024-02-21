@@ -33,7 +33,7 @@ let default_headers (c : Config.t) =
 let make_body enc x =
   Decoders_yojson.Basic.Encode.encode_string enc x |> Cohttp_lwt.Body.of_string
 
-let read_response dec s=
+let read_response dec s =
   match
     Decoders_yojson.Basic.Decode.decode_string (D.Response.with_capture dec) s
   with
@@ -48,7 +48,7 @@ let read_error s =
   | Error e -> Error (`Error_decoding_response e)
 
 let read (dec : 'a Decoders_yojson.Basic.Decode.decoder) (resp, body) :
-    ('a Api.Response.with_capture, [> error ]) Lwt_result.t =
+    ('a Api.Response.with_capture, [> error ]) CCResult.t Lwt.t =
   let open Lwt.Syntax in
   let* body = Cohttp_lwt.Body.to_string body in
   let status = Cohttp.Response.status resp in

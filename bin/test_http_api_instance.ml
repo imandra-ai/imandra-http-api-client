@@ -1,4 +1,4 @@
-module Client = Imandra_http_api_client
+module Client = Imandra_http_api_client.Main
 module Api = Imandra_http_api_client.Api
 
 let () = Printexc.record_backtrace true

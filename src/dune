@@ -1,6 +1,8 @@
 (library
  (name imandra_http_api_client)
  (public_name imandra-http-api-client)
+ (preprocess
+  (pps ppx_deriving.show))
  (flags
   (:standard -w -27))
  (libraries
