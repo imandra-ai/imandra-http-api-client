@@ -8,7 +8,10 @@ let () =
 
   let response http ~sw =
     Log.debug (fun k -> k "Sending query to server...");
-    let result = Main_eio.get_history config http ~sw in
+    let req : Api.Request.eval_req_src =
+      { src = "let f x = x + 1"; syntax = Iml }
+    in
+    let result = Main_eio.eval config req http ~sw in
     match result with
     | Ok st ->
       Log.app (fun k ->

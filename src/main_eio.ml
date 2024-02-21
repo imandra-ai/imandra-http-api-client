@@ -67,26 +67,26 @@ let read (dec : 'a Decoders_yojson.Basic.Decode.decoder)
    Eio_mock.Net.on_connect net [ `Return conn ];
    net *)
 
-(* let eval (c : Config.t) (req : Api.Request.eval_req_src) ~sw cl =
-   let uri = build_uri c "/eval/by-src" in
-   let headers = default_headers c |> Cohttp.Header.of_list in
-   let body = make_body E.Request.eval_req_src req in
-   (* let res = Cohttp_eio.Client.call ~headers ~body cl `POST uri ~sw in *)
-   let res = Cohttp_eio.Client.get ~headers cl ~sw uri in
-   read D.Response.eval_result res *)
+let eval (c : Config.t) (req : Api.Request.eval_req_src) ~sw cl =
+  let uri = build_uri c "/eval/by-src" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.eval_req_src req in
+  let res = Cohttp_eio.Client.call cl ~sw `POST uri ~headers ~body in
+  read D.Response.eval_result res
+
 let get_history (c : Config.t) cl ~sw =
   let uri = build_uri c "/history" in
   let headers = default_headers c |> Cohttp.Header.of_list in
   let resp, body = Cohttp_eio.Client.get cl ~sw uri ~headers in
-  Logs.app (fun k -> k "%s" (body |> Eio.Flow.read_all));
 
+  Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all));
   read Decoders_yojson.Basic.Decode.string (resp, body)
 
 let get_status (c : Config.t) cl ~sw =
   let uri = build_uri c "/status" in
   let headers = default_headers c |> Cohttp.Header.of_list in
   let resp, body = Cohttp_eio.Client.get cl ~sw uri ~headers in
-  Logs.app (fun k -> k "%s" (body |> Eio.Flow.read_all));
+  (* Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all)); *)
   read Decoders_yojson.Basic.Decode.string (resp, body)
 
 let reset (c : Config.t) cl ~sw =
