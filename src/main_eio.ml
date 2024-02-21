@@ -58,39 +58,71 @@ let read (dec : 'a Decoders_yojson.Basic.Decode.decoder)
     read_error body
     |> CCResult.flat_map (fun err -> Error (`Error_response (status, err)))
 
-(* let net =
-   let open Eio.Std in
-   let net = Eio_mock.Net.make "mocknet" in
-   Eio_mock.Net.on_getaddrinfo net
-     [ `Return [ `Tcp (Eio.Net.Ipaddr.V4.loopback, 443) ] ];
-   let conn = Eio_mock.Flow.make "connection" in
-   Eio_mock.Net.on_connect net [ `Return conn ];
-   net *)
-
-let eval (c : Config.t) (req : Api.Request.eval_req_src) ~sw cl =
+let eval (c : Config.t) (req : Api.Request.eval_req_src) ~sw ~client =
   let uri = build_uri c "/eval/by-src" in
   let headers = default_headers c |> Cohttp.Header.of_list in
   let body = make_body E.Request.eval_req_src req in
-  let res = Cohttp_eio.Client.call cl ~sw `POST uri ~headers ~body in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers ~body in
   read D.Response.eval_result res
 
-let get_history (c : Config.t) cl ~sw =
+let get_history (c : Config.t) ~client ~sw =
   let uri = build_uri c "/history" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let resp, body = Cohttp_eio.Client.get cl ~sw uri ~headers in
+  let resp, body = Cohttp_eio.Client.get client ~sw uri ~headers in
 
   Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all));
   read Decoders_yojson.Basic.Decode.string (resp, body)
 
-let get_status (c : Config.t) cl ~sw =
+let get_status (c : Config.t) ~client ~sw =
   let uri = build_uri c "/status" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let resp, body = Cohttp_eio.Client.get cl ~sw uri ~headers in
+  let resp, body = Cohttp_eio.Client.get client ~sw uri ~headers in
   (* Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all)); *)
   read Decoders_yojson.Basic.Decode.string (resp, body)
 
-let reset (c : Config.t) cl ~sw =
+let instance_by_name (c : Config.t) req ~client ~sw =
+  let uri = build_uri c "/instance/by-name" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.instance_req_name req in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers ~body in
+  read D.Response.instance_result res
+
+let instance_by_src (c : Config.t) req ~client ~sw =
+  let uri = build_uri c "/instance/by-src" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.instance_req_src req in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers ~body in
+  read D.Response.instance_result res
+
+let reset (c : Config.t) ~client ~sw =
   let uri = build_uri c "/reset" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let res = Cohttp_eio.Client.call cl ~sw `POST uri ~headers in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers in
   read D.Response.reset_result res
+
+let shutdown (c : Config.t) ~client ~sw =
+  let uri = build_uri c "/shutdown" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers in
+  read Decoders_yojson.Basic.Decode.string res
+
+let verify_by_name (c : Config.t) req ~client ~sw =
+  let uri = build_uri c "/verify/by-name" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.verify_req_name req in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers ~body in
+  read D.Response.verify_result res
+
+let verify_by_src (c : Config.t) req ~client ~sw =
+  let uri = build_uri c "/verify/by-src" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.verify_req_src req in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers ~body in
+  read D.Response.verify_result res
+
+let decompose (c : Config.t) req ~client ~sw =
+  let uri = build_uri c "/decompose" in
+  let headers = default_headers c |> Cohttp.Header.of_list in
+  let body = make_body E.Request.decomp_req_src req in
+  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers ~body in
+  read D.Response.decompose_result res
