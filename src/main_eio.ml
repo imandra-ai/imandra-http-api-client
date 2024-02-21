@@ -77,14 +77,17 @@ let read (dec : 'a Decoders_yojson.Basic.Decode.decoder)
 let get_history (c : Config.t) cl ~sw =
   let uri = build_uri c "/history" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let res = Cohttp_eio.Client.get cl ~sw uri ~headers in
-  read Decoders_yojson.Basic.Decode.string res
+  let resp, body = Cohttp_eio.Client.get cl ~sw uri ~headers in
+  Logs.app (fun k -> k "%s" (body |> Eio.Flow.read_all));
+
+  read Decoders_yojson.Basic.Decode.string (resp, body)
 
 let get_status (c : Config.t) cl ~sw =
   let uri = build_uri c "/status" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let res = Cohttp_eio.Client.get cl ~sw uri ~headers in
-  read Decoders_yojson.Basic.Decode.string res
+  let resp, body = Cohttp_eio.Client.get cl ~sw uri ~headers in
+  Logs.app (fun k -> k "%s" (body |> Eio.Flow.read_all));
+  read Decoders_yojson.Basic.Decode.string (resp, body)
 
 let reset (c : Config.t) cl ~sw =
   let uri = build_uri c "/reset" in
