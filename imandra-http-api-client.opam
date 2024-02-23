@@ -11,6 +11,9 @@ depends: [
   "dune" {>= "2.7"}
   "ocaml"
   "containers"
+  "cohttp-eio"
+  "eio"
+  "eio_main"
   "cohttp"
   "ppx_deriving"
   "cohttp-lwt-unix"

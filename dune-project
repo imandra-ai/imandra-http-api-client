@@ -20,6 +20,9 @@
  (depends
   ocaml
   containers
+  cohttp-eio
+  eio
+  eio_main
   cohttp
   ppx_deriving
   cohttp-lwt-unix
