@@ -85,22 +85,21 @@ module D : sig
     module Hints : sig
       module Induct : sig
         val structural :
-          (Yojson.Basic.t, Api.Request.Hints.Induct.t) Decoders.Decoder.t
+          Api.Request.Hints.Induct.t Decoders_yojson.Basic.Decode.decoder
 
         val functional :
-          (Yojson.Basic.t, Api.Request.Hints.Induct.t) Decoders.Decoder.t
+          Api.Request.Hints.Induct.t Decoders_yojson.Basic.Decode.decoder
 
-        val t : (Yojson.Basic.t, Api.Request.Hints.Induct.t) Decoders.Decoder.t
+        val t : Api.Request.Hints.Induct.t Decoders_yojson.Basic.Decode.decoder
       end
 
       module Method : sig
         val unroll :
-          (Yojson.Basic.t, Api.Request.Hints.Method.unroll) Decoders.Decoder.t
+          Api.Request.Hints.Method.unroll Decoders_yojson.Basic.Decode.decoder
 
         val ext_solver :
-          ( Yojson.Basic.t,
-            Api.Request.Hints.Method.ext_solver )
-          Decoders.Decoder.t
+          Api.Request.Hints.Method.ext_solver
+          Decoders_yojson.Basic.Decode.decoder
 
         val t : Api.Request.Hints.Method.t Decoders_yojson.Basic.Decode.decoder
       end

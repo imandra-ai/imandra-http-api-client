@@ -152,17 +152,17 @@ module Decoders : functor (D : Decoders.Decode.S) -> sig
   module Request : sig
     module Hints : sig
       module Induct : sig
-        val structural : (D.value, Request.Hints.Induct.t) D.t_let
+        val structural : Request.Hints.Induct.t D.decoder
 
-        val functional : (D.value, Request.Hints.Induct.t) D.t_let
+        val functional : Request.Hints.Induct.t D.decoder
 
-        val t : (D.value, Request.Hints.Induct.t) D.t_let
+        val t : Request.Hints.Induct.t D.decoder
       end
 
       module Method : sig
-        val unroll : (D.value, Request.Hints.Method.unroll) D.t_let
+        val unroll : Request.Hints.Method.unroll D.decoder
 
-        val ext_solver : (D.value, Request.Hints.Method.ext_solver) D.t_let
+        val ext_solver : Request.Hints.Method.ext_solver D.decoder
 
         val t : Request.Hints.Method.t D.decoder
       end
