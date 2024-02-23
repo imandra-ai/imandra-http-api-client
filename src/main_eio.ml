@@ -31,6 +31,16 @@ let default_headers (c : Config.t) =
 let make_body enc x : Cohttp_eio.Body.t =
   Decoders_yojson.Basic.Encode.encode_string enc x |> Cohttp_eio.Body.of_string
 
+let read_raw (s : Cohttp_eio.Body.t) =
+  let flow = s |> Eio.Flow.read_all in
+  let to_str = CCFormat.sprintf "%S" flow in
+  match
+    Decoders_yojson.Basic.Decode.decode_string
+      Decoders_yojson.Basic.Decode.string to_str
+  with
+  | Ok err -> Ok err
+  | Error e -> Error (`Error_decoding_response e)
+
 let read_response dec (s : Cohttp_eio.Body.t) =
   match
     Decoders_yojson.Basic.Decode.decode_string
@@ -68,17 +78,16 @@ let eval (c : Config.t) (req : Api.Request.eval_req_src) ~sw ~client =
 let get_history (c : Config.t) ~client ~sw =
   let uri = build_uri c "/history" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let resp, body = Cohttp_eio.Client.get client ~sw uri ~headers in
+  let _resp, body = Cohttp_eio.Client.get client ~sw uri ~headers in
 
-  Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all));
-  read Decoders_yojson.Basic.Decode.string (resp, body)
+  (* Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all)); *)
+  read_raw body
 
 let get_status (c : Config.t) ~client ~sw =
   let uri = build_uri c "/status" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let resp, body = Cohttp_eio.Client.get client ~sw uri ~headers in
-  (* Logs.debug (fun k -> k "%s" (body |> Eio.Flow.read_all)); *)
-  read Decoders_yojson.Basic.Decode.string (resp, body)
+  let _resp, body = Cohttp_eio.Client.get client ~sw uri ~headers in
+  read_raw body
 
 let instance_by_name (c : Config.t) req ~client ~sw =
   let uri = build_uri c "/instance/by-name" in
@@ -97,14 +106,14 @@ let instance_by_src (c : Config.t) req ~client ~sw =
 let reset (c : Config.t) ~client ~sw =
   let uri = build_uri c "/reset" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers in
-  read D.Response.reset_result res
+  let _res, body = Cohttp_eio.Client.call client ~sw `POST uri ~headers in
+  read_raw body
 
 let shutdown (c : Config.t) ~client ~sw =
   let uri = build_uri c "/shutdown" in
   let headers = default_headers c |> Cohttp.Header.of_list in
-  let res = Cohttp_eio.Client.call client ~sw `POST uri ~headers in
-  read Decoders_yojson.Basic.Decode.string res
+  let _res, body = Cohttp_eio.Client.call client ~sw `POST uri ~headers in
+  read_raw body
 
 let verify_by_name (c : Config.t) req ~client ~sw =
   let uri = build_uri c "/verify/by-name" in
