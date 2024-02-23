@@ -141,6 +141,8 @@ type error =
     Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
   ]
 
+val handle_error : Format.formatter -> error -> unit
+
 val build_uri : Config.t -> string -> Uri.t
 
 val default_headers : Config.t -> (string * string) list

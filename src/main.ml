@@ -23,10 +23,10 @@ let handle_error fpf (e : error) =
   let open CCFormat in
   match e with
   | `Error_decoding_response err ->
-    fprintf fpf "decoder error %a" Decoders_yojson.Basic.Decode.pp_error err
+    fprintf fpf "Decoding error: %a" Decoders_yojson.Basic.Decode.pp_error err
   | `Error_response (code, err) ->
     (* TODO: also print the err *)
-    fprintf fpf "got error %s" (Cohttp.Code.string_of_status code)
+    fprintf fpf "Error response: Code = %s" (Cohttp.Code.string_of_status code)
 
 let build_uri (c : Config.t) path = Uri.with_path c.base_uri path
 
