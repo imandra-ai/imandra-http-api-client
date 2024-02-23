@@ -91,6 +91,8 @@ module Response : sig
     raw_stdio: string option;
   }
 
+  val pp_capture : Format.formatter -> capture -> unit
+
   type model = {
     syntax: src_syntax;
     src: string;

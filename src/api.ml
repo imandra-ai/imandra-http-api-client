@@ -99,6 +99,7 @@ module Response = struct
     stderr: string;
     raw_stdio: string option;
   }
+  [@@deriving show]
 
   type model = {
     syntax: src_syntax;

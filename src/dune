@@ -1,7 +1,18 @@
 (library
  (name imandra_http_api_client)
  (public_name imandra-http-api-client)
+ (preprocess
+  (pps ppx_deriving.show))
  (flags
   (:standard -w -27))
- (libraries str cohttp-lwt-unix lwt decoders decoders-yojson containers)
+ (libraries
+  str
+  cohttp-lwt-unix
+  cohttp-eio
+  eio
+  eio_main
+  lwt
+  decoders
+  decoders-yojson
+  containers)
  (wrapped true))

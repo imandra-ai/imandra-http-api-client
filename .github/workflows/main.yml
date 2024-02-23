@@ -16,8 +16,8 @@ jobs:
           - ubuntu-latest
           # - windows-latest
         ocaml-compiler:
-          - 4.14.x
-          # - 4.08.x
+          # - 4.14.x
+          - 5.1.x
           # - 4.06.x
 
     runs-on: ${{ matrix.os }}
@@ -30,7 +30,9 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
       - name: Install project dependencies
-        run: opam install . --deps-only --with-doc --with-test
+        run: |
+          opam install . --deps-only --with-doc --with-test
+          opam pin add cohttp-eio 6.0.0~beta2
       - name: Build the project
         run: opam exec -- dune build @install
 
