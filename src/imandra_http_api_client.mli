@@ -47,6 +47,8 @@ module E : sig
 
     val instance_req_name : Api.Request.instance_req_name -> Yojson.Basic.t
 
+    val decomp_req_src : Api.Request.decomp_req_src -> Yojson.Basic.t
+
     val eval_req_src : Api.Request.eval_req_src -> Yojson.Basic.t
   end
 
@@ -68,6 +70,10 @@ module E : sig
 
     val instance_result :
       Api.Response.instance_result Decoders_yojson.Basic.Encode.encoder
+
+    val decompose_result :
+      Yojson.Basic.t Api.Response.decompose_result
+      Decoders_yojson.Basic.Encode.encoder
 
     val capture : Api.Response.capture -> (string * Yojson.Basic.t) list
 
@@ -131,6 +137,44 @@ module D : sig
 
   module Response : sig
     type my_error = Api.Response.error
+
+    val src_syntax : Api.src_syntax Decoders_yojson.Basic.Decode.decoder
+
+    val model : Api.Response.model Decoders_yojson.Basic.Decode.decoder
+
+    val instance : Api.Response.instance Decoders_yojson.Basic.Decode.decoder
+
+    val with_instance :
+      Api.Response.with_instance Decoders_yojson.Basic.Decode.decoder
+
+    val with_unknown_reason :
+      Api.Response.with_unknown_reason Decoders_yojson.Basic.Decode.decoder
+
+    val upto : Api.Response.upto Decoders_yojson.Basic.Decode.decoder
+
+    val error : my_error Decoders_yojson.Basic.Decode.decoder
+
+    val verify_result :
+      Api.Response.verify_result Decoders_yojson.Basic.Decode.decoder
+
+    val instance_result :
+      Api.Response.instance_result Decoders_yojson.Basic.Decode.decoder
+
+    val eval_result :
+      Api.Response.eval_result Decoders_yojson.Basic.Decode.decoder
+
+    val reset_result : unit Decoders_yojson.Basic.Decode.decoder
+
+    val decompose_result :
+      Yojson.Basic.t Api.Response.decompose_result
+      Decoders_yojson.Basic.Decode.decoder
+
+    val opt_capture :
+      Api.Response.capture option Decoders_yojson.Basic.Decode.decoder
+
+    val with_capture :
+      'a Decoders_yojson.Basic.Decode.decoder ->
+      'a Api.Response.with_capture Decoders_yojson.Basic.Decode.decoder
   end
 end
 
@@ -164,8 +208,8 @@ val read_error :
 
 val read :
   'a Decoders_yojson.Basic.Decode.decoder ->
-  Cohttp.Response.t * Cohttp_lwt.Body.t ->
-  ('a Api.Response.with_capture, [> error ]) Lwt_result.t
+  Http.Response.t * Cohttp_lwt.Body.t ->
+  ('a Api.Response.with_capture, [> error ]) result Lwt.t
 
 val eval :
   Config.t ->
@@ -217,3 +261,138 @@ val decompose :
     [> error ] )
   result
   Lwt.t
+
+module Eio : sig
+  val read_raw :
+    Cohttp_eio.Body.t ->
+    ( string,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val read_response :
+    'a Decoders_yojson.Basic.Decode.decoder ->
+    Cohttp_eio.Body.t ->
+    ( 'a Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val read_error :
+    Cohttp_eio.Body.t ->
+    ( Api.Response.error Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val read :
+    'a Decoders_yojson.Basic.Decode.decoder ->
+    Http.Response.t * Cohttp_eio.Body.t ->
+    ( 'a Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+
+  val eval :
+    Config.t ->
+    Api.Request.eval_req_src ->
+    sw:Eio.Switch.t ->
+    client:Cohttp_eio.Client.t ->
+    ( Api.Response.eval_result Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+
+  val get_history :
+    Config.t ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( string,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val get_status :
+    Config.t ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( string,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val instance_by_name :
+    Config.t ->
+    Api.Request.instance_req_name ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( Api.Response.instance_result Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+
+  val instance_by_src :
+    Config.t ->
+    Api.Request.instance_req_src ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( Api.Response.instance_result Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+
+  val reset :
+    Config.t ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( string,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val shutdown :
+    Config.t ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( string,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error ] )
+    result
+
+  val verify_by_name :
+    Config.t ->
+    Api.Request.verify_req_name ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( Api.Response.verify_result Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+
+  val verify_by_src :
+    Config.t ->
+    Api.Request.verify_req_src ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( Api.Response.verify_result Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+
+  val decompose :
+    Config.t ->
+    Api.Request.decomp_req_src ->
+    client:Cohttp_eio.Client.t ->
+    sw:Eio.Switch.t ->
+    ( Yojson.Basic.t Api.Response.decompose_result Api.Response.with_capture,
+      [> `Error_decoding_response of Decoders_yojson.Basic.Decode.error
+      | `Error_response of
+        Cohttp.Code.status_code * Api.Response.error Api.Response.with_capture
+      ] )
+    result
+end

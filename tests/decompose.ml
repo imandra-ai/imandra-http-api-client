@@ -1,4 +1,4 @@
-module Client = Imandra_http_api_client.Main
+module Client = Imandra_http_api_client
 
 let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
   [
