@@ -3,22 +3,22 @@
  (modules test_main)
  (libraries client_tests imandra_http_api_client alcotest alcotest-lwt))
 
-; (executable
-;  (name test_main_eio)
-;  (modules test_main_eio)
-;  (libraries client_tests imandra_http_api_client alcotest))
+(executable
+ (name test_main_eio)
+ (modules test_main_eio)
+ (libraries client_tests imandra_http_api_client alcotest))
 
 (library
  (name client_tests)
  (modules :standard \ test_main test_main_eio)
  (libraries imandra_http_api_client alcotest alcotest-lwt))
 
-(rule
- (alias runtest)
- (action
-  (run ./test_main.exe)))
-
 ; (rule
 ;  (alias runtest)
 ;  (action
-;   (run ./test_main_eio.exe)))
+;   (run ./test_main.exe)))
+
+(rule
+ (alias runtest)
+ (action
+  (run ./test_main_eio.exe)))

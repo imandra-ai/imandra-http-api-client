@@ -2,8 +2,7 @@ open Imandra_http_api_client
 
 let tests (module Log : Logs.LOG) ~client ~sw : unit Alcotest.test_case list =
   [
-    Alcotest.test_case "Finding an instance x such that x+1>4." `Quick
-      (fun () ->
+    Alcotest.test_case "Region decomp." `Quick (fun () ->
         let config =
           Main_eio.Config.make ~base_uri:"http://127.0.0.1:3000" ()
         in
@@ -14,17 +13,17 @@ let tests (module Log : Logs.LOG) ~client ~sw : unit Alcotest.test_case list =
         let _ = Main_eio.eval config redef ~sw ~client in
         Log.debug (fun k -> k "Sending query to server...");
         let req : Api.Request.eval_req_src =
-          { src = "let goo x = x + 1"; syntax = Iml }
+          { src = "let boo (x : int) = x > 1"; syntax = Iml }
         in
-        let _ = Main_eio.eval config req ~sw ~client in
+        let _ = Main_eio.eval config req ~client ~sw in
         let result =
-          Main_eio.instance_by_src config ~client ~sw
+          Main_eio.decompose config ~client ~sw
             {
-              src = "fun (x : int) -> goo x > 4";
-              syntax = Iml;
-              hints = None;
-              instance_printer =
-                Some { name = "Z.sprint ()"; cx_var_name = "x" };
+              Api.Request.name = "boo";
+              Api.Request.assuming = None;
+              Api.Request.prune = true;
+              Api.Request.max_rounds = None;
+              Api.Request.stop_at = None;
             }
         in
         let ok =
