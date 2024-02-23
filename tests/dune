@@ -13,10 +13,10 @@
  (modules :standard \ test_main test_main_eio)
  (libraries imandra_http_api_client alcotest alcotest-lwt))
 
-; (rule
-;  (alias runtest)
-;  (action
-;   (run ./test_main.exe)))
+(rule
+ (alias runtest)
+ (action
+  (run ./test_main.exe)))
 
 (rule
  (alias runtest)
