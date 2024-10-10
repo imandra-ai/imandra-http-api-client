@@ -49,12 +49,14 @@ module Request : sig
     src: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type verify_req_name = {
     name: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type instance_req_src = {
@@ -62,12 +64,14 @@ module Request : sig
     src: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type instance_req_name = {
     name: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type decomp_req_src = {
