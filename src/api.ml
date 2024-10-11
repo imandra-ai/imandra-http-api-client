@@ -58,12 +58,14 @@ module Request = struct
     src: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type verify_req_name = {
     name: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type instance_req_src = {
@@ -71,12 +73,14 @@ module Request = struct
     src: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type instance_req_name = {
     name: string;
     instance_printer: printer_details option;
     hints: Hints.t option;
+    reflect: bool;
   }
 
   type decomp_req_src = {
@@ -219,10 +223,11 @@ module Decoders (D : Decoders.Decode.S) = struct
       field_opt "syntax" src_syntax >>= fun syntax ->
       field "src" string >>= fun src ->
       field_opt "instance_printer" printer_details >>= fun instance_printer ->
+      field "reflect" bool >>= fun reflect ->
       field_opt "hints" Hints.t >>= fun hints ->
       let syntax = Option.value ~default:Iml syntax in
       let r : Request.verify_req_src =
-        Request.{ syntax; src; instance_printer; hints }
+        Request.{ syntax; src; instance_printer; hints; reflect }
       in
       succeed r
 
@@ -230,28 +235,31 @@ module Decoders (D : Decoders.Decode.S) = struct
       field "name" string >>= fun name ->
       field_opt "instance_printer" printer_details >>= fun instance_printer ->
       field_opt "hints" Hints.t >>= fun hints ->
+      field "reflect" bool >>= fun reflect ->
       let r : Request.verify_req_name =
-        Request.{ name; instance_printer; hints }
+        Request.{ name; instance_printer; hints; reflect }
       in
       succeed r
 
     let instance_req_src : Request.instance_req_src decoder =
       field_opt "syntax" src_syntax >>= fun syntax ->
       field "src" string >>= fun src ->
+      field "reflect" bool >>= fun reflect ->
       field_opt "instance_printer" printer_details >>= fun instance_printer ->
       field_opt "hints" Hints.t >>= fun hints ->
       let syntax = Option.value ~default:Iml syntax in
       let r : Request.instance_req_src =
-        Request.{ syntax; src; instance_printer; hints }
+        Request.{ syntax; src; instance_printer; hints; reflect }
       in
       succeed r
 
     let instance_req_name : Request.instance_req_name decoder =
       field "name" string >>= fun name ->
+      field "reflect" bool >>= fun reflect ->
       field_opt "instance_printer" printer_details >>= fun instance_printer ->
       field_opt "hints" Hints.t >>= fun hints ->
       let r : Request.instance_req_name =
-        Request.{ name; instance_printer; hints }
+        Request.{ name; instance_printer; hints; reflect }
       in
       succeed r
 
@@ -429,30 +437,35 @@ module Encoders (E : D.Encode.S) = struct
 
     let verify_req_src (x : Request.verify_req_src) =
       obj
-        ([ "syntax", src_syntax x.syntax; "src", string x.src ]
+        ([
+           "syntax", src_syntax x.syntax;
+           "src", string x.src;
+           "reflect", bool x.reflect;
+         ]
         |> append_opt_key "instance_printer" printer_details x.instance_printer
         |> append_opt_key "hints" Hints_e.t x.hints)
 
     let verify_req_name (x : Request.verify_req_name) =
       obj
-        ([ "name", string x.name ]
+        ([ "name", string x.name; "reflect", bool x.reflect ]
         |> append_opt_key "instance_printer" printer_details x.instance_printer
         |> append_opt_key "hints" Hints_e.t x.hints)
 
     let instance_req_src (x : Request.instance_req_src) =
       obj
-        ([ "syntax", src_syntax x.syntax; "src", string x.src ]
+        ([
+           "syntax", src_syntax x.syntax;
+           "src", string x.src;
+           "reflect", bool x.reflect;
+         ]
         |> append_opt_key "instance_printer" printer_details x.instance_printer
         |> append_opt_key "hints" Hints_e.t x.hints)
 
     let instance_req_name (x : Request.instance_req_name) =
       obj
-        ([ "name", string x.name ]
+        ([ "name", string x.name; "reflect", bool x.reflect ]
         |> append_opt_key "instance_printer" printer_details x.instance_printer
         |> append_opt_key "hints" Hints_e.t x.hints)
-
-    let eval_req_src (x : Request.eval_req_src) =
-      obj [ "syntax", src_syntax x.syntax; "src", string x.src ]
 
     let decomp_req_src (x : Request.decomp_req_src) =
       obj
@@ -460,6 +473,9 @@ module Encoders (E : D.Encode.S) = struct
         |> append_opt_key "assuming" string x.assuming
         |> append_opt_key "max_rounds" int x.max_rounds
         |> append_opt_key "stop_at" int x.stop_at)
+
+    let eval_req_src (x : Request.eval_req_src) =
+      obj [ "syntax", src_syntax x.syntax; "src", string x.src ]
   end
 
   module Response = struct

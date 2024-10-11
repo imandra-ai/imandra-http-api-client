@@ -33,6 +33,7 @@ let () =
           syntax = Iml;
           hints = Some { method_ = Auto };
           instance_printer = None;
+          reflect = false;
         }
     in
     Log.debug (fun k -> k "Shutting down server...");

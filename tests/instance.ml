@@ -21,6 +21,7 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
                 hints = None;
                 instance_printer =
                   Some { name = "Z.sprint ()"; cx_var_name = "x" };
+                reflect = true;
               }
           in
           Lwt.return result
