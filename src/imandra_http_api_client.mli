@@ -171,10 +171,10 @@ val eval :
   (Api.Response.eval_result Api.Response.with_capture, [> error ]) result Lwt.t
 
 val get_history :
-  Config.t -> (string Api.Response.with_capture, [> error ]) result Lwt.t
+  Config.t -> (string, [> error ]) result Lwt.t
 
 val get_status :
-  Config.t -> (string Api.Response.with_capture, [> error ]) result Lwt.t
+  Config.t -> (string, [> error ]) result Lwt.t
 
 val instance_by_name :
   Config.t ->

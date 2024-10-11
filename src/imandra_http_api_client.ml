@@ -61,6 +61,19 @@ let read (dec : 'a Decoders_yojson.Basic.Decode.decoder) (resp, body) :
   in
   Lwt.return res
 
+let read_string (resp, body) : ('a, [> error ]) Lwt_result.t =
+  let open Lwt.Syntax in
+  let* body = Cohttp_lwt.Body.to_string body in
+  let status = Cohttp.Response.status resp in
+  let res =
+    if status = `OK then
+      Ok body
+    else
+      read_error body
+      |> CCResult.flat_map (fun err -> Error (`Error_response (status, err)))
+  in
+  Lwt.return res
+
 let eval (c : Config.t) req =
   let open Lwt.Syntax in
   let uri = build_uri c "/eval/by-src" in
@@ -74,14 +87,14 @@ let get_history (c : Config.t) =
   let uri = build_uri c "/history" in
   let headers = default_headers c |> Cohttp.Header.of_list in
   let* res = Cohttp_lwt_unix.Client.call `GET uri ~headers in
-  read Decoders_yojson.Basic.Decode.string res
+  read_string res
 
 let get_status (c : Config.t) =
   let open Lwt.Syntax in
   let uri = build_uri c "/status" in
   let headers = default_headers c |> Cohttp.Header.of_list in
   let* res = Cohttp_lwt_unix.Client.call `GET uri ~headers in
-  read Decoders_yojson.Basic.Decode.string res
+  read_string res
 
 let instance_by_name (c : Config.t) req =
   let open Lwt.Syntax in
