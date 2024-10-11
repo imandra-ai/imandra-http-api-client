@@ -33,6 +33,7 @@ let () =
           syntax = Iml;
           hints = None;
           instance_printer = Some { name = "Z.sprint ()"; cx_var_name = "x" };
+          reflect = true;
         }
     in
     Log.debug (fun k -> k "Shutting down server...");

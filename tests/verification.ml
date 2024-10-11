@@ -19,6 +19,7 @@ let tests (module Log : Logs.LOG) : unit Alcotest_lwt.test_case list =
                 syntax = Iml;
                 hints = Some { method_ = Auto };
                 instance_printer = None;
+                reflect = false;
               }
           in
           Lwt.return result
